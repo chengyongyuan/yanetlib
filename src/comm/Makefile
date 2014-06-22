@@ -33,6 +33,7 @@ SRC    = $(CXXSRC) $(CSRC)
 CXXOBJ = $(CXXSRC:%.cc=%.o)
 COBJ   = $(CSRC:%.c=%.o)
 OBJ    = $(CXXOBJ) $(COBJ)
+OBJ    := $(filter-out %unittest.o, $(OBJ))
 
 LIB   = $(GTEST_DIR)/gtest_main.a
 
