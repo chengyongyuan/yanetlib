@@ -1,0 +1,11 @@
+#ifndef _VERIFY_H
+#define _VERIFY_H
+
+#include <assert.h>
+
+#ifndef NDEBUG
+#define VERIFY(__expr) assert((__expr))
+#define BUG_ON(__expr) assert(!(__expr))
+#endif
+
+#endif //verify.h

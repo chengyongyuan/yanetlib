@@ -1,0 +1,220 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ARRAY_SIZE	common.h	41;"	d
+ARRAY_SIZE	common.h	42;"	d
+BOOL	md5.cc	/^typedef char BOOL;$/;"	t	namespace:yanetlib::comm	file:
+BYTE	md5.cc	/^typedef char BYTE;$/;"	t	namespace:yanetlib::comm	file:
+COBJ	Makefile	/^COBJ   = $(CSRC:%.c=%.o)$/;"	m
+COLIN_CHECK	common.h	105;"	d
+COLIN_CHECK	common.h	113;"	d
+COLIN_CHECK_EQ	common.h	106;"	d
+COLIN_CHECK_EQ	common.h	115;"	d
+COLIN_CHECK_GE	common.h	111;"	d
+COLIN_CHECK_GE	common.h	120;"	d
+COLIN_CHECK_GT	common.h	110;"	d
+COLIN_CHECK_GT	common.h	119;"	d
+COLIN_CHECK_LE	common.h	109;"	d
+COLIN_CHECK_LE	common.h	118;"	d
+COLIN_CHECK_LT	common.h	108;"	d
+COLIN_CHECK_LT	common.h	117;"	d
+COLIN_CHECK_NE	common.h	107;"	d
+COLIN_CHECK_NE	common.h	116;"	d
+COLIN_LOG	common.h	97;"	d
+COLIN_LOG	common.h	98;"	d
+COLIN_LOG_IF	common.h	102;"	d
+COLIN_LOG_IF	common.h	96;"	d
+COMPILE_ASSERT	common.h	36;"	d
+COMPILE_ASSERT	common.h	37;"	d
+CSRC	Makefile	/^CSRC   = $(wildcard *.c)$/;"	m
+CXXOBJ	Makefile	/^CXXOBJ = $(CXXSRC:%.cc=%.o)$/;"	m
+CXXSRC	Makefile	/^CXXSRC = $(wildcard *.cc)$/;"	m
+CompileAssert	common.h	/^struct CompileAssert {$/;"	s	namespace:yanetlib::comm
+DEFINE_STREAM_OPERATOR	common.cc	40;"	d	file:
+DEFINE_STREAM_OPERATOR	common.cc	41;"	d	file:
+DateTime	datetime.h	/^class DateTime {$/;"	c	namespace:yanetlib::comm
+Decode	md5.cc	/^void Md5::Decode ( UINT4 *output, unsigned char *input, unsigned int len) {$/;"	f	class:yanetlib::comm::Md5
+DefaultLogHandler	common.cc	/^void DefaultLogHandler(LogLevel level, const char* filename,$/;"	f	namespace:yanetlib::comm
+ElementType	common.h	/^     typedef C ElementType;$/;"	t	class:yanetlib::comm::ScopedPtr
+Encode	md5.cc	/^void Md5::Encode ( unsigned char *output, UINT4 *input, unsigned int len) {$/;"	f	class:yanetlib::comm::Md5
+F	md5.cc	98;"	d	file:
+FALSE	md5.cc	69;"	d	file:
+FF	md5.cc	110;"	d	file:
+Finish	common.cc	/^void LogMessage::Finish() {$/;"	f	class:yanetlib::comm::LogMessage
+G	md5.cc	99;"	d	file:
+GG	md5.cc	115;"	d	file:
+GOOGLE_DISALLOW_EVIL_CONSTRUCTORS	common.h	46;"	d
+GOOGLE_DISALLOW_EVIL_CONSTRUCTORS	common.h	47;"	d
+GTEST_DIR	Makefile	/^GTEST_DIR = ..\/gtest$/;"	m
+GetDateStr	datetime.cc	/^string DateTime::GetDateStr() {$/;"	f	class:yanetlib::comm::DateTime
+GetDateStr	datetime.cc	/^string DateTime::GetDateStr(time_t t) {$/;"	f	class:yanetlib::comm::DateTime
+GetDay	datetime.cc	/^string DateTime::GetDay() {$/;"	f	class:yanetlib::comm::DateTime
+GetDay	datetime.cc	/^string DateTime::GetDay(time_t t) {$/;"	f	class:yanetlib::comm::DateTime
+GetHour	datetime.cc	/^string DateTime::GetHour() {$/;"	f	class:yanetlib::comm::DateTime
+GetHour	datetime.cc	/^string DateTime::GetHour(time_t t) {$/;"	f	class:yanetlib::comm::DateTime
+GetMonth	datetime.cc	/^string DateTime::GetMonth() {$/;"	f	class:yanetlib::comm::DateTime
+GetMonth	datetime.cc	/^string DateTime::GetMonth(time_t t) {$/;"	f	class:yanetlib::comm::DateTime
+GetTimeStr	datetime.cc	/^string DateTime::GetTimeStr() {$/;"	f	class:yanetlib::comm::DateTime
+GetTimeStr	datetime.cc	/^string DateTime::GetTimeStr(time_t t) {$/;"	f	class:yanetlib::comm::DateTime
+GetYear	datetime.cc	/^string DateTime::GetYear() {$/;"	f	class:yanetlib::comm::DateTime
+GetYear	datetime.cc	/^string DateTime::GetYear(time_t t) {$/;"	f	class:yanetlib::comm::DateTime
+H	md5.cc	100;"	d	file:
+HH	md5.cc	120;"	d	file:
+HasPrefixString	strutil.h	/^inline bool HasPrefixString(const std::string& str, $/;"	f	namespace:yanetlib::comm
+HasSuffixString	strutil.h	/^inline bool HasSuffixString(const std::string& str, const std::string& suffix)$/;"	f	namespace:yanetlib::comm
+I	md5.cc	101;"	d	file:
+II	md5.cc	125;"	d	file:
+INCL	Makefile	/^INCL = -I$(GTEST_DIR)\/include -I$(YANETLIB_DIR)$/;"	m
+Internal	common.cc	/^struct Mutex::Internal {$/;"	s	class:yanetlib::comm::Mutex	file:
+JoinStrings	strutil.cc	/^void JoinStrings(const vector<string>& components,$/;"	f	namespace:yanetlib::comm
+JoinStrings	strutil.h	/^inline std::string JoinStrings(const std::vector<std::string>& components,$/;"	f	namespace:yanetlib::comm
+JoinStringsIterator	strutil.cc	/^void JoinStringsIterator(const ITER& begin,$/;"	f	namespace:yanetlib::comm
+LIB	Makefile	/^LIB   = $(GTEST_DIR)\/gtest_main.a$/;"	m
+LOGLEVEL_ERROR	common.h	/^    LOGLEVEL_ERROR,$/;"	e	enum:yanetlib::comm::LogLevel
+LOGLEVEL_FATA	common.h	/^    LOGLEVEL_FATA,$/;"	e	enum:yanetlib::comm::LogLevel
+LOGLEVEL_INFO	common.h	/^    LOGLEVEL_INFO,$/;"	e	enum:yanetlib::comm::LogLevel
+LOGLEVEL_WARNNING	common.h	/^    LOGLEVEL_WARNNING,$/;"	e	enum:yanetlib::comm::LogLevel
+Lock	common.cc	/^void Mutex::Lock() {$/;"	f	class:yanetlib::comm::Mutex
+Lock	common.h	/^     void Lock() {}$/;"	f	class:yanetlib::comm::NullMutex
+LogFinisher	common.h	/^class LogFinisher {$/;"	c	namespace:yanetlib::comm
+LogHandler	common.h	/^typedef void LogHandler(LogLevel level, const char* filename, int line,$/;"	t	namespace:yanetlib::comm
+LogLevel	common.h	/^enum LogLevel {$/;"	g	namespace:yanetlib::comm
+LogMessage	common.cc	/^LogMessage::LogMessage(LogLevel level, const char* filename, int line) $/;"	f	class:yanetlib::comm::LogMessage
+LogMessage	common.h	/^class LogMessage {$/;"	c	namespace:yanetlib::comm
+LowerString	strutil.h	/^inline void LowerString(std::string* s) {$/;"	f	namespace:yanetlib::comm
+MD5Final	md5.cc	/^void Md5::MD5Final ( unsigned char digest[16], MD5_CTX *context) {$/;"	f	class:yanetlib::comm::Md5
+MD5Init	md5.cc	/^void Md5::MD5Init (MD5_CTX *context) {$/;"	f	class:yanetlib::comm::Md5
+MD5Transform	md5.cc	/^void Md5::MD5Transform ( UINT4 state[4], unsigned char block[64]) {$/;"	f	class:yanetlib::comm::Md5
+MD5Update	md5.cc	/^void Md5::MD5Update ( MD5_CTX *context, $/;"	f	class:yanetlib::comm::Md5
+MD5_CTX	md5.h	/^    } MD5_CTX;$/;"	t	class:yanetlib::comm::Md5	typeref:struct:yanetlib::comm::Md5::__anon1
+MD5_DIGEST_LENGTH	md5.cc	71;"	d	file:
+MD5_memcpy	md5.cc	/^void Md5::MD5_memcpy ( POINTER output, POINTER input, unsigned int len) {$/;"	f	class:yanetlib::comm::Md5
+MD5_memset	md5.cc	/^void Md5::MD5_memset ( POINTER output, int value, unsigned int len) {$/;"	f	class:yanetlib::comm::Md5
+Md5	md5.h	/^class Md5 {$/;"	c	namespace:yanetlib::comm
+Md5HashBuffer	md5.cc	/^void Md5::Md5HashBuffer( BYTE *outBuffer, const BYTE *inBuffer, int length)$/;"	f	class:yanetlib::comm::Md5
+Md5HashString	md5.cc	/^string Md5::Md5HashString(const char* inBuffer, int length) {$/;"	f	class:yanetlib::comm::Md5
+Mutex	common.cc	/^Mutex::Mutex() : internal_(new Internal) {$/;"	f	class:yanetlib::comm::Mutex
+Mutex	common.h	/^class Mutex {$/;"	c	namespace:yanetlib::comm
+NullLogHandler	common.cc	/^void NullLogHandler(LogLevel level, const char* filename,$/;"	f	namespace:yanetlib::comm
+NullMutex	common.h	/^     NullMutex() {}$/;"	f	class:yanetlib::comm::NullMutex
+NullMutex	common.h	/^class NullMutex {$/;"	c	namespace:yanetlib::comm
+OBJ	Makefile	/^OBJ    = $(CXXOBJ) $(COBJ)$/;"	m
+PADDING	md5.cc	/^static unsigned char PADDING[64] = {$/;"	m	namespace:yanetlib::comm	file:
+POINTER	md5.h	/^    typedef unsigned char* POINTER;$/;"	t	class:yanetlib::comm::Md5
+ROTATE_LEFT	md5.cc	105;"	d	file:
+S11	md5.cc	73;"	d	file:
+S12	md5.cc	74;"	d	file:
+S13	md5.cc	75;"	d	file:
+S14	md5.cc	76;"	d	file:
+S21	md5.cc	77;"	d	file:
+S22	md5.cc	78;"	d	file:
+S23	md5.cc	79;"	d	file:
+S24	md5.cc	80;"	d	file:
+S31	md5.cc	81;"	d	file:
+S32	md5.cc	82;"	d	file:
+S33	md5.cc	83;"	d	file:
+S34	md5.cc	84;"	d	file:
+S41	md5.cc	85;"	d	file:
+S42	md5.cc	86;"	d	file:
+S43	md5.cc	87;"	d	file:
+S44	md5.cc	88;"	d	file:
+SRC	Makefile	/^SRC    = $(CXXSRC) $(CSRC)$/;"	m
+ScopedLock	common.h	/^    explicit ScopedLock(Mutex* m) : m_(m) {$/;"	f	class:yanetlib::comm::ScopedLock
+ScopedLock	common.h	/^class ScopedLock {$/;"	c	namespace:yanetlib::comm
+ScopedPtr	common.h	/^     explicit ScopedPtr(C* p = NULL) : ptr_(p) { }$/;"	f	class:yanetlib::comm::ScopedPtr
+ScopedPtr	common.h	/^class ScopedPtr {$/;"	c	namespace:yanetlib::comm
+SetUp	strutil_unittest.cc	/^     virtual void SetUp() {$/;"	f	class:StrUtilTest
+SplitString	strutil.cc	/^void SplitString(const string& full, const char* delim,$/;"	f	namespace:yanetlib::comm
+SplitStringByIterator	strutil.cc	/^static inline void SplitStringByIterator(const string& full,$/;"	f	namespace:yanetlib::comm
+StrUtilTest	strutil_unittest.cc	/^     StrUtilTest() {$/;"	f	class:StrUtilTest
+StrUtilTest	strutil_unittest.cc	/^class StrUtilTest : public testing::Test {$/;"	c	file:
+StringReplace	strutil.cc	/^string StringReplace(const string& s, const string& oldsub,$/;"	f	namespace:yanetlib::comm
+StringReplace	strutil.cc	/^void StringReplace(const string& s, const string& oldsub,$/;"	f	namespace:yanetlib::comm
+StripPrefixString	strutil.h	/^inline std::string StripPrefixString(const std::string& str, $/;"	f	namespace:yanetlib::comm
+StripString	strutil.cc	/^string StripString(const string& s, const char* remove) {$/;"	f	namespace:yanetlib::comm
+StripString	strutil.cc	/^void StripString(string* s, const char *remove,$/;"	f	namespace:yanetlib::comm
+StripSuffixString	strutil.h	/^inline std::string StripSuffixString(const std::string& str, $/;"	f	namespace:yanetlib::comm
+TARGET	Makefile	/^TARGET = libcomm.a$/;"	m
+TEST_F	strutil_unittest.cc	/^TEST_F(StrUtilTest, SplitTest) {$/;"	f
+TEST_F	strutil_unittest.cc	/^TEST_F(StrUtilTest, StrPrefixTest) {$/;"	f
+TEST_F	strutil_unittest.cc	/^TEST_F(StrUtilTest, StrReplaceTest) {$/;"	f
+TEST_F	strutil_unittest.cc	/^TEST_F(StrUtilTest, StrStripTest) {$/;"	f
+TRUE	md5.cc	68;"	d	file:
+TearDown	strutil_unittest.cc	/^     virtual void TearDown() {$/;"	f	class:StrUtilTest
+UINT2	md5.h	/^    typedef unsigned short int UINT2;$/;"	t	class:yanetlib::comm::Md5
+UINT4	md5.h	/^    typedef uint32_t UINT4;$/;"	t	class:yanetlib::comm::Md5
+USER_DIR	Makefile	/^USER_DIR = ..\/samples$/;"	m
+UnLock	common.cc	/^void Mutex::UnLock() {$/;"	f	class:yanetlib::comm::Mutex
+UnLock	common.h	/^     void UnLock() {}$/;"	f	class:yanetlib::comm::NullMutex
+UpperString	strutil.h	/^inline void UpperString(std::string* s) {$/;"	f	namespace:yanetlib::comm
+YANETLIB_BASE_COMMON_H_	common.h	2;"	d
+YANETLIB_COMM_DATETIME_H	datetime.h	2;"	d
+YANETLIB_COMM_MD5_H	md5.h	36;"	d
+YANETLIB_COMM_STRUTIL_H	strutil.h	2;"	d
+YANETLIB_DIR	Makefile	/^YANETLIB_DIR = ..$/;"	m
+buffer	md5.h	/^      unsigned char buffer[64];                         \/* input buffer *\/$/;"	m	struct:yanetlib::comm::Md5::__anon1
+comm	common.cc	/^namespace comm {$/;"	n	namespace:yanetlib	file:
+comm	common.h	/^namespace comm {$/;"	n	namespace:yanetlib
+comm	datetime.cc	/^namespace comm {$/;"	n	namespace:yanetlib	file:
+comm	datetime.h	/^namespace comm {$/;"	n	namespace:yanetlib
+comm	md5.cc	/^namespace comm {$/;"	n	namespace:yanetlib	file:
+comm	md5.h	/^namespace comm {$/;"	n	namespace:yanetlib
+comm	strutil.cc	/^namespace comm {$/;"	n	namespace:yanetlib	file:
+comm	strutil.h	/^namespace comm {$/;"	n	namespace:yanetlib
+count	md5.h	/^      UINT4 count[2];        \/* number of bits, modulo 2^64 (lsb first) *\/$/;"	m	struct:yanetlib::comm::Md5::__anon1
+filename_	common.h	/^    const char* filename_;$/;"	m	class:yanetlib::comm::LogMessage
+get	common.h	/^     C* get() const {$/;"	f	class:yanetlib::comm::ScopedPtr
+int16	common.h	/^typedef int16_t int16;$/;"	t	namespace:yanetlib::comm
+int32	common.h	/^typedef int32_t int32;$/;"	t	namespace:yanetlib::comm
+int64	common.h	/^typedef int64_t int64;$/;"	t	namespace:yanetlib::comm
+int8	common.h	/^typedef int8_t int8;$/;"	t	namespace:yanetlib::comm
+internal_	common.h	/^    Internal* internal_;$/;"	m	class:yanetlib::comm::Mutex
+level_	common.h	/^    LogLevel level_;$/;"	m	class:yanetlib::comm::LogMessage
+line_	common.h	/^    int line_;$/;"	m	class:yanetlib::comm::LogMessage
+log_handler_	common.cc	/^static LogHandler* log_handler_ = &DefaultLogHandler;$/;"	m	namespace:yanetlib::comm	file:
+m_	common.h	/^    M* m_;$/;"	m	class:yanetlib::comm::ScopedLock
+message_	common.h	/^    std::string message_;$/;"	m	class:yanetlib::comm::LogMessage
+mutex	common.cc	/^    pthread_mutex_t mutex;$/;"	m	struct:yanetlib::comm::Mutex::Internal	file:
+operator !=	common.h	/^     bool operator!=(C* p) const { return ptr_ != p; }$/;"	f	class:yanetlib::comm::ScopedPtr
+operator *	common.h	/^     C& operator*() const{$/;"	f	class:yanetlib::comm::ScopedPtr
+operator ->	common.h	/^     C* operator->() const{$/;"	f	class:yanetlib::comm::ScopedPtr
+operator <<	common.cc	/^LogMessage& LogMessage::operator<<(const char* message) {$/;"	f	class:yanetlib::comm::LogMessage
+operator <<	common.cc	/^LogMessage& LogMessage::operator<<(const std::string& message) {$/;"	f	class:yanetlib::comm::LogMessage
+operator =	common.h	/^     bool operator=(C* p) const { return ptr_ == p; } $/;"	f	class:yanetlib::comm::ScopedPtr
+prefix_str1	strutil_unittest.cc	/^     string prefix_str1;$/;"	m	class:StrUtilTest	file:
+prefix_str2	strutil_unittest.cc	/^     string prefix_str2;$/;"	m	class:StrUtilTest	file:
+ptr_	common.h	/^     C* ptr_;$/;"	m	class:yanetlib::comm::ScopedPtr
+release	common.h	/^     C* release() {$/;"	f	class:yanetlib::comm::ScopedPtr
+repl_str1	strutil_unittest.cc	/^     string repl_str1;$/;"	m	class:StrUtilTest	file:
+repl_str2	strutil_unittest.cc	/^     string repl_str2;$/;"	m	class:StrUtilTest	file:
+reset	common.h	/^     void reset(C* p = NULL) {$/;"	f	class:yanetlib::comm::ScopedPtr
+split_str1	strutil_unittest.cc	/^     string split_str1;$/;"	m	class:StrUtilTest	file:
+split_str2	strutil_unittest.cc	/^     string split_str2;$/;"	m	class:StrUtilTest	file:
+state	md5.h	/^      UINT4 state[4];                                   \/* state (ABCD) *\/$/;"	m	struct:yanetlib::comm::Md5::__anon1
+strip_str1	strutil_unittest.cc	/^     string strip_str1;$/;"	m	class:StrUtilTest	file:
+strip_str2	strutil_unittest.cc	/^     string strip_str2;$/;"	m	class:StrUtilTest	file:
+strip_str3	strutil_unittest.cc	/^     string strip_str3;$/;"	m	class:StrUtilTest	file:
+strip_str4	strutil_unittest.cc	/^     string strip_str4;$/;"	m	class:StrUtilTest	file:
+suffix_str1	strutil_unittest.cc	/^     string suffix_str1;$/;"	m	class:StrUtilTest	file:
+suffix_str2	strutil_unittest.cc	/^     string suffix_str2;$/;"	m	class:StrUtilTest	file:
+uint	common.h	/^typedef unsigned int uint;$/;"	t	namespace:yanetlib::comm
+uint16	common.h	/^typedef uint16_t uint16;$/;"	t	namespace:yanetlib::comm
+uint32	common.h	/^typedef uint32_t uint32;$/;"	t	namespace:yanetlib::comm
+uint64	common.h	/^typedef uint64_t uint64;$/;"	t	namespace:yanetlib::comm
+uint8	common.h	/^typedef uint8_t uint8;$/;"	t	namespace:yanetlib::comm
+yanetlib	common.cc	/^namespace yanetlib {$/;"	n	file:
+yanetlib	common.h	/^namespace yanetlib {$/;"	n
+yanetlib	datetime.cc	/^namespace yanetlib {$/;"	n	file:
+yanetlib	datetime.h	/^namespace yanetlib {$/;"	n
+yanetlib	md5.cc	/^namespace yanetlib {$/;"	n	file:
+yanetlib	md5.h	/^namespace yanetlib {$/;"	n
+yanetlib	strutil.cc	/^namespace yanetlib {$/;"	n	file:
+yanetlib	strutil.h	/^namespace yanetlib {$/;"	n
+~LogMessage	common.cc	/^LogMessage::~LogMessage() { }$/;"	f	class:yanetlib::comm::LogMessage
+~Mutex	common.cc	/^Mutex::~Mutex() {$/;"	f	class:yanetlib::comm::Mutex
+~NullMutex	common.h	/^     ~NullMutex() {}$/;"	f	class:yanetlib::comm::NullMutex
+~ScopedLock	common.h	/^    ~ScopedLock() {$/;"	f	class:yanetlib::comm::ScopedLock
+~ScopedPtr	common.h	/^     ~ScopedPtr() {$/;"	f	class:yanetlib::comm::ScopedPtr

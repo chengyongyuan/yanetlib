@@ -1,0 +1,25 @@
+1. first commit
+--This line, and those below, will be ignored--
+
+A    md5_unittest.cc
+D    scopelock.h
+A    md5.cc
+A    common_unittest.cc
+A    md5.h
+A    common.cc
+A    Makefile
+D    makefile
+D    udp_client.py
+A    common.h
+A    datetime_unittest.cc
+A    datetime.cc
+D    poller.cc
+A    datetime.h
+D    poller.h
+A    strutil_unittest.cc
+D    verify.h
+A    strutil.cc
+A    strutil.h
+A    tags
+D    pollmgr.cc
+D    pollmgr.h

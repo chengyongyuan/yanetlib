@@ -1,0 +1,18 @@
+#ifndef _SCOPE_LOCK_H
+#define _SCOPE_LOCK_H
+
+#include <pthread.h>
+#include "verify.h"
+
+class ScopeLock {
+	public:
+		ScopeLock(pthread_mutex_t *m) : _m(m) {
+			VERIFY(pthread_mutex_lock(_m) == 0);
+		}
+		~ScopeLock() {
+			VERIFY(pthread_mutex_unlock(_m) == 0);
+		}
+	private:
+		pthread_mutex_t *_m;
+};
+#endif // scopelock.h
