@@ -189,7 +189,7 @@ class ScopedLock {
     }
 
  private:
-    M* m_;
+    M*const m_;
     GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(ScopedLock);
 };
 
