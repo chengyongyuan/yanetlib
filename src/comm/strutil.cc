@@ -1,5 +1,7 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
 #include <limits.h>
 #include <assert.h>
 #include <iterator>
@@ -38,6 +40,22 @@ string StripString(const string& s, const char* remove) {
         begin_index = s.find_first_not_of(remove, end_index);
     }
     return result;
+}
+
+string StripStringLeft(const string& s, const char* remove) {
+    string::size_type begin_index = s.find_first_not_of(remove);
+    if (begin_index == string::npos) {//remove all
+        return "";
+    }
+    return s.substr(begin_index);
+}
+
+string StripStringRight(const string& s, const char* remove) {
+    string::size_type begin_index = s.find_last_not_of(remove);
+    if (begin_index == string::npos) {//remove all
+        return "";
+    }
+    return s.substr(0, begin_index+1);
 }
 
 // ----------------------------------------------------------------------
@@ -81,12 +99,15 @@ string StringReplace(const string& s, const string& oldsub,
 //   Split a string using a character delimiter. Append the components
 //   to 'result'.
 //   If delimiter is multi-character. then split on *ANY* of them, not
-//   the entire stirng as a single string.
+//   the entire stirng as a single string. you can split at most count
+//   times, if count==0, we mean split all :-
 // ----------------------------------------------------------------------
 template <typename ITER>
 static inline void SplitStringByIterator(const string& full,
                                     const char* delim,
-                                    ITER& result) {
+                                    ITER& result, 
+                                    int count = 0) {
+    int split_cnt = 0;
     //Optimize for single delim characters.
     if (delim[0] != '\0' && delim[1] == '\0') {
         char c = delim[0];
@@ -99,6 +120,12 @@ static inline void SplitStringByIterator(const string& full,
                 const char* start = p;
                 while(++p != end && *p != c) ;
                 *result++ = string(start, p -start);
+                //split only once
+                if (++split_cnt == count) {
+                    while(p++ != end && *p == c); //spip consective delim
+                    if (p != end) *result++ = string(p, end-p);
+                    return ;
+                }
             }
         }
         return;
@@ -113,13 +140,18 @@ static inline void SplitStringByIterator(const string& full,
         }
         *result++ = full.substr(begin_index, end_index - begin_index);
         begin_index = full.find_first_not_of(delim, end_index);
+        if (++split_cnt == count) {
+            if (begin_index != string::npos) 
+                *result++ = full.substr(begin_index);
+            return;
+        }
     }
 }
 
 void SplitString(const string& full, const char* delim,
-                 vector<string>* result) {
+                 vector<string>* result, int count) {
     back_insert_iterator< vector<string> > it(*result);
-    SplitStringByIterator(full, delim, it);
+    SplitStringByIterator(full, delim, it, count);
 }
 
 // ----------------------------------------------------------------------
@@ -160,6 +192,42 @@ void JoinStrings(const vector<string>& components,
                  const char* delim,
                  string* result) {
     JoinStringsIterator(components.begin(), components.end(), delim, result);
+}
+
+//see man strtol
+bool String2Long(const std::string& str, long& val, int base) {
+    char *endptr;
+    errno = 0;
+
+    long longval = strtol(str.c_str(), &endptr, base);
+
+    if (str.empty()) return false;
+    //overflow or underflow
+    if ((errno == ERANGE || (longval == LONG_MAX || longval == LONG_MIN))
+        || (errno != 0 && longval == 0))
+        return false;
+    //no digit
+    if (endptr == str.c_str()) return false;
+    val = longval;
+
+    return true;
+}
+
+bool String2Double(const std::string& str, double& val) {
+    char *endptr;
+    errno = 0;
+
+    double dval = strtod(str.c_str(), &endptr);
+
+    if (str.empty()) return false;
+    //overflow or underflow
+    if (errno == ERANGE || (errno != 0 && dval == 0))
+        return false;
+    //no digit
+    if (endptr == str.c_str()) return false;
+    val = dval;
+
+    return true;
 }
 
 } //namespace comm

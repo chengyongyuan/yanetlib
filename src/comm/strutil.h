@@ -12,6 +12,7 @@
 //Author: colincheng 334089103@qq.com
 //
 
+#include <limits.h>
 #include <string>
 #include <vector>
 
@@ -61,7 +62,9 @@ inline std::string StripSuffixString(const std::string& str,
 }
 
 // ----------------------------------------------------------------------
-// StripString
+// StripString()
+// StripStringLeft()
+// StripStringRight()
 //  Replace any character in 'remove' with 'replacewith'
 //  Two verions. one replace the 'delim' chars. the other
 //  one just delete the 'delim' chars(consective delim are deleted).
@@ -69,6 +72,12 @@ inline std::string StripSuffixString(const std::string& str,
 // ----------------------------------------------------------------------
 void StripString(std::string* s, const char *remove,
                  char replacewith);
+
+std::string StripStringLeft(const std::string& s,
+                            const char* remove);
+
+std::string StripStringRight(const std::string& s,
+                            const char* remove);
 std::string 
 StripString(const std::string& s, const char* remove);
 
@@ -107,10 +116,10 @@ std::string StringReplace(const std::string& s, const std::string& oldsub,
 //  SplitString()
 //   Split a string using a character delimiter. Append each string in
 //   result. If there are conseutive delimiters, this function skips
-//   them
+//   them. split at most 'count' times. count=0(default) means split all
 // ----------------------------------------------------------------------
 void SplitString(const std::string& full, const char* delim,
-                 std::vector<std::string>* result);
+                 std::vector<std::string>* result, int count = 0);
 
 // ----------------------------------------------------------------------
 //  JoinString()
@@ -128,6 +137,19 @@ inline std::string JoinStrings(const std::vector<std::string>& components,
     JoinStrings(components, delim, &result);
     return result;
 }
+
+
+// ----------------------------------------------------------------------
+//  String2Long()
+//  String2Double()
+//  Convert String to Long , double val. a think wrapper of
+//  strtol, strtod, more robust than simple atoi, atof, since
+//  it can handle more error conditions
+//  RETURN true if convert ok. when return false, caller should
+//  not use value.
+bool String2Long(const std::string& str, long& val, int base = 10);
+
+bool String2Double(const std::string& str, double& val);
 }//namespace comm 
 }//namespace yanetlib
 

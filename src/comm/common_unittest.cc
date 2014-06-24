@@ -7,7 +7,7 @@
 using namespace std;
 using namespace ::yanetlib::comm;
 
-typedef Mutex MutexLock;
+typedef NullMutex MutexLock;
 
 //Unittest for many basic function in common.cc
 //Things in common.cc are those most fundamental.
