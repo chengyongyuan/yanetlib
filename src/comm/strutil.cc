@@ -122,7 +122,7 @@ static inline void SplitStringByIterator(const string& full,
                 *result++ = string(start, p -start);
                 //split only once
                 if (++split_cnt == count) {
-                    while(p++ != end && *p == c); //spip consective delim
+                    while(p++ != end && *p == c); //spip consecutive delim
                     if (p != end) *result++ = string(p, end-p);
                     return ;
                 }
