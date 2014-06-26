@@ -52,6 +52,9 @@ class DateTime {
      static std::string GetHour(time_t t);
 
      static std::string GetHour();
+ private:
+    DateTime(const DateTime&);
+    void operator=(const DateTime&);
 };
 
 } //namespace comm

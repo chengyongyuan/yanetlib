@@ -42,7 +42,7 @@ LIB   = $(GTEST_DIR)/gtest_main.a
 TARGET = libcomm.a
 
 UNITTEST = strutil_unittest datetime_unittest md5_unittest common_unittest tinyxml2_unittest \
-		   simpleconf_unittest
+		   simpleconf_unittest rotatelog_unittest
 
 all : $(TARGET)
 
@@ -75,6 +75,9 @@ common_unittest: common_unittest.o common.o
 simpleconf_unittest: simpleconf_unittest.o strutil.o config_parser.o 
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
 	./simpleconf_unittest
+rotatelog_unittest: rotatelog_unittest.o rotate_log.o datetime.o
+	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
+	./rotatelog_unittest
 #tinyxml2 has its own unittest, now using gtest..
 tinyxml2_unittest: tinyxml2_unittest.o tinyxml2.o
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ 

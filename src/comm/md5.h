@@ -68,6 +68,10 @@ class Md5 {
     //just like outout of shell "md5sum" cmd
     static std::string Md5HashString(const char* inBuffer, int length);
  private:
+    //disable copy
+    Md5(const Md5&);
+    void operator=(const Md5&);
+
     static void MD5Init (MD5_CTX *);
     static void MD5Update (MD5_CTX *, unsigned char *, unsigned int);
     static void MD5Final (unsigned char [16], MD5_CTX *);

@@ -12,6 +12,11 @@ class StrUtilTest : public testing::Test {
  protected:
      
      StrUtilTest() {
+         //upper/lower
+         upper_str1 = "this is lower";
+         lower_str1 = "THIS IS UPPER";
+         upper_str2 =  "####uppe#r";
+         lower_str2 = "###LOWER##";
          //prefix/suffix
          prefix_str1 = "COLIN_DEBUG:this is a prefix test";
          prefix_str2 = "  COLIN_DEBUG:this is a prefix test";
@@ -41,6 +46,12 @@ class StrUtilTest : public testing::Test {
 
      virtual void TearDown() {
      }
+
+     //upper/lower
+     string upper_str1;
+     string lower_str1;
+     string upper_str2;
+     string lower_str2;
 
      //For Prefix/Suffix functions
      string prefix_str1;
@@ -208,4 +219,18 @@ TEST_F(StrUtilTest, StrConvertTest) {
     EXPECT_TRUE(String2Double(str7, dval));
     EXPECT_TRUE((dval-3.1415126 < 0.0001)); 
     EXPECT_FALSE(String2Double(str8, dval));
+}
+
+TEST_F(StrUtilTest, StrUpperLower) {
+    UpperString(&upper_str1);
+    UpperString(&upper_str1);
+    LowerString(&lower_str1);
+    UpperString(&upper_str2);
+    LowerString(&lower_str2);
+
+    EXPECT_EQ("THIS IS LOWER", upper_str1);
+    EXPECT_EQ("THIS IS LOWER", upper_str1);
+    EXPECT_EQ("this is upper", lower_str1);
+    EXPECT_EQ("####UPPE#R", upper_str2);
+    EXPECT_EQ("###lower##", lower_str2);
 }

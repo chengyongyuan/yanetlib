@@ -66,6 +66,10 @@ class SimpleConf {
      bool GetFloatArray(const std::string& key, std::vector<double>& ar,
                         const std::vector<double>& def = std::vector<double>());
  private:
+     //disable copy
+     SimpleConf(const SimpleConf&);
+     void operator=(const SimpleConf&);
+
      void PrintKeyVal() const;
 
  private:

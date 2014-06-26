@@ -150,6 +150,22 @@ inline std::string JoinStrings(const std::vector<std::string>& components,
 bool String2Long(const std::string& str, long& val, int base = 10);
 
 bool String2Double(const std::string& str, double& val);
+
+// ----------------------------------------------------------------------
+//  Basename()
+//  Pathname()
+//  FileExt()
+//  Helper function to get file basename or pathname
+//  FileExt Get file extension
+//  eg.
+//  /home/file.log : Basename() == file.log; PathName() == /home
+//  /file.log      : Basename() == file.log; PathName() == "/"
+//  file.log       : Basename() == file.log; PathName() == "."
+//  dir/file.log   : Basename() == file.log; PathName() == "./dir"
+std::string Basename(const std::string& absnmae);
+std::string Pathname(const std::string& absnmae);
+std::string FileExt(const std::string& fname);
+
 }//namespace comm 
 }//namespace yanetlib
 
