@@ -56,7 +56,7 @@ class RotateLog {
      //if the log is not rotate size, then maxsize simply 
      //has no effect.
      bool Init(LogLevel level, const std::string& name, RotateType rtype, 
-               int maxsize, int maxcnt = 30);
+               int maxsize, int maxcnt = 20);
 
      //Log to file. first three parm ususally wrap by
      void Log(DateFormat dformat, const char* fmt, ...);

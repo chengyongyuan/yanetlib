@@ -81,3 +81,5 @@ rotatelog_unittest: rotatelog_unittest.o rotate_log.o datetime.o
 #tinyxml2 has its own unittest, now using gtest..
 tinyxml2_unittest: tinyxml2_unittest.o tinyxml2.o
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ 
+
+
