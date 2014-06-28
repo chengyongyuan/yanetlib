@@ -63,6 +63,9 @@ unittest: $(UNITTEST)
 strutil_unittest: strutil_unittest.o strutil.o 
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
 	./strutil_unittest
+fileutil_unittest: fileutil_unittest.o fileutil.o
+	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
+	./fileutil_unittest
 datetime_unittest: datetime_unittest.o datetime.o 
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
 	./datetime_unittest
