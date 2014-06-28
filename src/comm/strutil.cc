@@ -230,33 +230,34 @@ bool String2Double(const std::string& str, double& val) {
     return true;
 }
 
-string Basename(const std::string& absname) {
-    size_t pos = absname.find_last_of("/");
-    //filename only
-    if (pos == string::npos) {
+string BaseName(const string& absname)
+{
+    size_t pos = absname.find_last_of('/');
+    if (pos == string::npos)
         return absname;
-    }
-    return absname.substr(pos+1); 
+    return absname.substr(pos + 1);
 }
 
-string Pathname(const std::string& absname) {
-    size_t pos = absname.find_last_of("/");
-    //filename only,we set pathname to current dir
-    if (pos == string::npos) {
-        return ".";
+string PathName(const string& absname)
+{
+    if (absname.at(0) != '/') {
+        string full_path("./");
+        full_path.append(absname);
+        size_t pos = full_path.find_last_of('/');
+        return full_path.substr(0, pos);
     }
-    //handle pathname like /filename
-    if (pos == 0) return "/";
+    size_t pos = absname.find_last_of('/');
+    if (pos == 0)
+        return "/";
     return absname.substr(0, pos);
 }
 
-string FileExt(const std::string& absname) {
-    size_t pos = absname.find_last_of(".");
-    //does not have a ext
-    if (pos == string::npos) {
+string FileExt(const string& fname)
+{
+    size_t pos = fname.find_last_of('.');
+    if (pos == string::npos)
         return "";
-    }
-    return absname.substr(pos+1);
+    return fname.substr(pos + 1);
 }
 
 } //namespace comm

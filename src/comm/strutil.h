@@ -152,18 +152,18 @@ bool String2Long(const std::string& str, long& val, int base = 10);
 bool String2Double(const std::string& str, double& val);
 
 // ----------------------------------------------------------------------
-//  Basename()
-//  Pathname()
+//  BaseName()
+//  PathName()
 //  FileExt()
 //  Helper function to get file basename or pathname
 //  FileExt Get file extension
 //  eg.
-//  /home/file.log : Basename() == file.log; PathName() == /home
-//  /file.log      : Basename() == file.log; PathName() == "/"
-//  file.log       : Basename() == file.log; PathName() == "."
-//  dir/file.log   : Basename() == file.log; PathName() == "dir"
-std::string Basename(const std::string& absname);
-std::string Pathname(const std::string& absname);
+//  /home/file.log : BaseName() == file.log; PathName() == /home
+//  /file.log      : BaseName() == file.log; PathName() == "/"
+//  file.log       : BaseName() == file.log; PathName() == "."
+//  dir/file.log   : BaseName() == file.log; PathName() == "./dir"
+std::string BaseName(const std::string& absname);
+std::string PathName(const std::string& absname);
 std::string FileExt(const std::string& fname);
 
 }//namespace comm 

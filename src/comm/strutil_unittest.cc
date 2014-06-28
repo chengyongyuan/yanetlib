@@ -260,17 +260,27 @@ TEST_F(StrUtilTest, StrUpperLower) {
 //  file.log       : Basename() == file.log; PathName() == "."
 //  dir/file.log   : Basename() == file.log; PathName() == "dir"
 //  /onlydir/      : Basename() == "";       PathName() == "/onlydir"
-TEST_F(StrUtilTest, StrFileNameTest) {
-    EXPECT_EQ("file.log", Basename(file_str1));
-    EXPECT_EQ("/home", Pathname(file_str1));
-    EXPECT_EQ("file.log", Basename(file_str2));
-    EXPECT_EQ("/", Pathname(file_str2));
-    EXPECT_EQ("file.log", Basename(file_str3));
-    EXPECT_EQ(".", Pathname(file_str3));
-    EXPECT_EQ("file.log", Basename(file_str4));
-    EXPECT_EQ("dir", Pathname(file_str4));
-    EXPECT_EQ("", Basename(file_str5));
-    EXPECT_EQ("/onlydir", Pathname(file_str5));
+TEST_F(StrUtilTest, FileNameTest) {
+    EXPECT_EQ("file.log", BaseName(file_str1));
+    EXPECT_EQ("/home", PathName(file_str1));
+    EXPECT_EQ("file.log", BaseName(file_str2));
+    EXPECT_EQ("/", PathName(file_str2));
+    EXPECT_EQ("file.log", BaseName(file_str3));
+    EXPECT_EQ(".", PathName(file_str3));
+    EXPECT_EQ("file.log", BaseName(file_str4));
+    EXPECT_EQ("./dir", PathName(file_str4));
+    EXPECT_EQ("", BaseName(file_str5));
+    EXPECT_EQ("/onlydir", PathName(file_str5));
+
+    EXPECT_EQ(BaseName("/home/file.log"), "file.log");
+    EXPECT_EQ(BaseName("/file.log"), "file.log");
+    EXPECT_EQ(BaseName("file.log"), "file.log");
+    EXPECT_EQ(BaseName("dir/file.log"), "file.log");
+
+    EXPECT_EQ(PathName("/home/file.log"), "/home");
+    EXPECT_EQ(PathName("/file.log"), "/");
+    EXPECT_EQ(PathName("file.log"), ".");
+    EXPECT_EQ(PathName("dir/file.log"), "./dir");
 
     string filename = "test.cc";
     string filename2 = "test";
@@ -278,4 +288,10 @@ TEST_F(StrUtilTest, StrFileNameTest) {
     EXPECT_EQ("cc", FileExt(filename));
     EXPECT_EQ("", FileExt(filename2));
     EXPECT_EQ("c", FileExt(filename3));
+    EXPECT_EQ(FileExt("/data/test.log"), "log");
+    EXPECT_EQ(FileExt("test.a.b.log"), "log");
+    EXPECT_EQ(FileExt("log"), "");
+    EXPECT_EQ(FileExt(".log"), "log");
+    EXPECT_EQ(FileExt("."), "");
+    EXPECT_EQ(FileExt(""), "");
 }
