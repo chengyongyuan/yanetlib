@@ -230,6 +230,28 @@ bool String2Double(const std::string& str, double& val) {
     return true;
 }
 
+string BaseName(const string& absname)
+{
+    size_t pos = absname.find_last_of('/');
+    if (pos == string::npos)
+        return absname;
+    return absname.substr(pos + 1);
+}
+
+string PathName(const string& absname)
+{
+    if (absname.at(0) != '/') {
+        string full_path("./");
+        full_path.append(absname);
+        size_t pos = full_path.find_last_of('/');
+        return full_path.substr(0, pos);
+    }
+    size_t pos = absname.find_last_of('/');
+    if (pos == 0)
+        return "/";
+    return absname.substr(0, pos);
+}
+
 string FileExt(const string& fname)
 {
     size_t pos = fname.find_last_of('.');

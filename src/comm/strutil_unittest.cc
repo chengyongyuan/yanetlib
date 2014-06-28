@@ -236,6 +236,20 @@ TEST_F(StrUtilTest, StrUpperLower) {
 }
 
 TEST_F(StrUtilTest, FileNameTest) {
+//  /home/file.log : Basename() == file.log; PathName() == /home
+//  /file.log      : Basename() == file.log; PathName() == "/"
+//  file.log       : Basename() == file.log; PathName() == "."
+//  dir/file.log   : Basename() == file.log; PathName() == "./dir"
+    EXPECT_EQ(BaseName("/home/file.log"), "file.log");
+    EXPECT_EQ(BaseName("/file.log"), "file.log");
+    EXPECT_EQ(BaseName("file.log"), "file.log");
+    EXPECT_EQ(BaseName("dir/file.log"), "file.log");
+
+    EXPECT_EQ(PathName("/home/file.log"), "/home");
+    EXPECT_EQ(PathName("/file.log"), "/");
+    EXPECT_EQ(PathName("file.log"), ".");
+    EXPECT_EQ(PathName("dir/file.log"), "./dir");
+
     EXPECT_EQ(FileExt("/data/test.log"), "log");
     EXPECT_EQ(FileExt("test.a.b.log"), "log");
     EXPECT_EQ(FileExt("log"), "");
