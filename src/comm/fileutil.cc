@@ -2,6 +2,7 @@ extern "C" {
 #include <stdio.h>
 #include <unistd.h>
 #include <limits.h>
+#include <string.h>
 }
 #include <comm/fileutil.h>
 
@@ -46,6 +47,18 @@ unsigned long GetFileSize(const char *file_path)
         return st.st_size;
     else
         return 0;
+}
+
+const char *GetBaseName(const char *file_path)
+{
+    if (file_path == NULL)
+        return NULL;
+    const char *p = file_path + strlen(file_path);
+    while (p != file_path) {
+        if (*--p == '/')
+            return p + 1;
+    }
+    return file_path;
 }
 
 } //namespace comm
