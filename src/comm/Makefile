@@ -42,7 +42,7 @@ LIB   = $(GTEST_DIR)/gtest_main.a
 TARGET = libcomm.a
 
 UNITTEST = strutil_unittest datetime_unittest md5_unittest common_unittest tinyxml2_unittest \
-		   simpleconf_unittest rotatelog_unittest fileutil_unittest
+		   simpleconf_unittest rotatelog_unittest fileutil_unittest processutil_unittest
 
 all : $(TARGET)
 
@@ -66,6 +66,9 @@ strutil_unittest: strutil_unittest.o strutil.o
 fileutil_unittest: fileutil_unittest.o fileutil.o
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
 	./fileutil_unittest
+processutil_unittest: processutil_unittest.o processutil.o
+	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
+	./processutil_unittest
 datetime_unittest: datetime_unittest.o datetime.o 
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
 	./datetime_unittest

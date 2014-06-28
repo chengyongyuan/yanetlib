@@ -4,8 +4,6 @@
 //This Files Contains Some Disk/File Utilility Functions.
 //Author: sbtdkj1017@tom.com
 
-#include <sys/stat.h>
-
 namespace yanetlib {
 namespace comm {
 

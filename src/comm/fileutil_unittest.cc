@@ -17,7 +17,6 @@ TEST(FileUtilTest, BasicTest) {
     EXPECT_FALSE(IsDirectory("./fileutil_unittest_not_exist"));
     EXPECT_FALSE(IsDirectory(NULL));
 
-    //EXPECT_EQ(EXPECT_VAL, REAL_VAL
     EXPECT_EQ(0UL, GetFileSize(NULL));
     EXPECT_TRUE(GetFileSize("fileutil_unittest") > 1000000);
     EXPECT_TRUE(GetFileSize(".") > GetFileSize("fileutil_unittest"));
