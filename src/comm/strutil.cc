@@ -230,5 +230,13 @@ bool String2Double(const std::string& str, double& val) {
     return true;
 }
 
+string FileExt(const string& fname)
+{
+    size_t pos = fname.find_last_of('.');
+    if (pos == string::npos)
+        return "";
+    return fname.substr(pos + 1);
+}
+
 } //namespace comm
 } //namspace yanetlib

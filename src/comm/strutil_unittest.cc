@@ -234,3 +234,12 @@ TEST_F(StrUtilTest, StrUpperLower) {
     EXPECT_EQ("####UPPE#R", upper_str2);
     EXPECT_EQ("###lower##", lower_str2);
 }
+
+TEST_F(StrUtilTest, FileNameTest) {
+    EXPECT_EQ(FileExt("/data/test.log"), "log");
+    EXPECT_EQ(FileExt("test.a.b.log"), "log");
+    EXPECT_EQ(FileExt("log"), "");
+    EXPECT_EQ(FileExt(".log"), "log");
+    EXPECT_EQ(FileExt("."), "");
+    EXPECT_EQ(FileExt(""), "");
+}
