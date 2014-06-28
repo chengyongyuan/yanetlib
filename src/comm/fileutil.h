@@ -3,7 +3,6 @@
 
 //This Files Contains Some Disk/File Utilility Functions.
 //Author: sbtdkj1017@tom.com
-//
 
 #include <sys/stat.h>
 
@@ -20,7 +19,8 @@ bool IsDirectory(const char *path);
 
 // Get file size.
 // If error occur (e.g. file does not exist), 0 will be returned.
-// If file_path specifies a directory, size of directory recursively will be returned
+// If file_path specifies a directory, size of directory recursively will be returned.
+// So be careful, get size of directory may block long time
 unsigned long GetFileSize(const char *file_path);
 
 // Get file base name. Just return the part after the last slash "/"

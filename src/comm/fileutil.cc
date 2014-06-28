@@ -25,7 +25,6 @@ bool IsDirectory(const char *path)
     return false;
 }
 
-//TODO: popen may block ?
 unsigned long GetFileSize(const char *file_path)
 {
     if (file_path == NULL)
