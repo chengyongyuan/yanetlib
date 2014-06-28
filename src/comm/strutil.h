@@ -161,9 +161,9 @@ bool String2Double(const std::string& str, double& val);
 //  /home/file.log : Basename() == file.log; PathName() == /home
 //  /file.log      : Basename() == file.log; PathName() == "/"
 //  file.log       : Basename() == file.log; PathName() == "."
-//  dir/file.log   : Basename() == file.log; PathName() == "./dir"
-std::string Basename(const std::string& absnmae);
-std::string Pathname(const std::string& absnmae);
+//  dir/file.log   : Basename() == file.log; PathName() == "dir"
+std::string Basename(const std::string& absname);
+std::string Pathname(const std::string& absname);
 std::string FileExt(const std::string& fname);
 
 }//namespace comm 

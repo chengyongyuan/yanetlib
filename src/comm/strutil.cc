@@ -230,5 +230,34 @@ bool String2Double(const std::string& str, double& val) {
     return true;
 }
 
+string Basename(const std::string& absname) {
+    size_t pos = absname.find_last_of("/");
+    //filename only
+    if (pos == string::npos) {
+        return absname;
+    }
+    return absname.substr(pos+1); 
+}
+
+string Pathname(const std::string& absname) {
+    size_t pos = absname.find_last_of("/");
+    //filename only,we set pathname to current dir
+    if (pos == string::npos) {
+        return ".";
+    }
+    //handle pathname like /filename
+    if (pos == 0) return "/";
+    return absname.substr(0, pos);
+}
+
+string FileExt(const std::string& absname) {
+    size_t pos = absname.find_last_of(".");
+    //does not have a ext
+    if (pos == string::npos) {
+        return "";
+    }
+    return absname.substr(pos+1);
+}
+
 } //namespace comm
 } //namspace yanetlib

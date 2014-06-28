@@ -38,6 +38,19 @@ class StrUtilTest : public testing::Test {
          //split
          split_str1 = "this is   a test";
          split_str2 = " this :: is:a:test ";
+
+         //file name test
+         //  /home/file.log : Basename() == file.log; PathName() == /home
+         //  /file.log      : Basename() == file.log; PathName() == "/"
+         //  file.log       : Basename() == file.log; PathName() == "."
+         //  dir/file.log   : Basename() == file.log; PathName() == "./dir"
+         //  /onlydir/      : Basename() == "";       PathName() == "/onlydir"
+         file_str1 = "/home/file.log";
+         file_str2 = "/file.log";
+         file_str3 = "file.log";
+         file_str4 = "dir/file.log";
+         file_str5 = "/onlydir/";
+
      }
 
      //setup
@@ -74,6 +87,12 @@ class StrUtilTest : public testing::Test {
      //For Join/Split functions
      string split_str1;
      string split_str2;
+
+     string file_str1;
+     string file_str2;
+     string file_str3;
+     string file_str4;
+     string file_str5;
 };
 
 TEST_F(StrUtilTest, StrPrefixTest) {
@@ -233,4 +252,30 @@ TEST_F(StrUtilTest, StrUpperLower) {
     EXPECT_EQ("this is upper", lower_str1);
     EXPECT_EQ("####UPPE#R", upper_str2);
     EXPECT_EQ("###lower##", lower_str2);
+}
+
+//file name test
+//  /home/file.log : Basename() == file.log; PathName() == /home
+//  /file.log      : Basename() == file.log; PathName() == "/"
+//  file.log       : Basename() == file.log; PathName() == "."
+//  dir/file.log   : Basename() == file.log; PathName() == "dir"
+//  /onlydir/      : Basename() == "";       PathName() == "/onlydir"
+TEST_F(StrUtilTest, StrFileNameTest) {
+    EXPECT_EQ("file.log", Basename(file_str1));
+    EXPECT_EQ("/home", Pathname(file_str1));
+    EXPECT_EQ("file.log", Basename(file_str2));
+    EXPECT_EQ("/", Pathname(file_str2));
+    EXPECT_EQ("file.log", Basename(file_str3));
+    EXPECT_EQ(".", Pathname(file_str3));
+    EXPECT_EQ("file.log", Basename(file_str4));
+    EXPECT_EQ("dir", Pathname(file_str4));
+    EXPECT_EQ("", Basename(file_str5));
+    EXPECT_EQ("/onlydir", Pathname(file_str5));
+
+    string filename = "test.cc";
+    string filename2 = "test";
+    string filename3 = "/home/oicq/icq_finger.c";
+    EXPECT_EQ("cc", FileExt(filename));
+    EXPECT_EQ("", FileExt(filename2));
+    EXPECT_EQ("c", FileExt(filename3));
 }

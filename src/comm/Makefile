@@ -42,7 +42,7 @@ LIB   = $(GTEST_DIR)/gtest_main.a
 TARGET = libcomm.a
 
 UNITTEST = strutil_unittest datetime_unittest md5_unittest common_unittest tinyxml2_unittest \
-		   simpleconf_unittest rotatelog_unittest
+		   simpleconf_unittest rotatelog_unittest fileutil_unittest
 
 all : $(TARGET)
 
