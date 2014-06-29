@@ -1,0 +1,4 @@
+TODO LIST
+1. incoperate zlib compressing lib for general use(esp. usefull for mobile software).
+2. need a simple to use event loop 
+3. need add some basic data structures(eg. HashTable/MemQueue(Channel)/freelist...)
