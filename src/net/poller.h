@@ -8,11 +8,16 @@
 //
 //colincheng 2014/06/29
 //
+//TODO
+//1. Refactor C version REDIS, decouple dependence  (DONE)
+//2. remove hardcode MAX_POLL_SIZE
 
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <string>
+#include <vector>
+#include "timer.h"
 
 namespace yanetlib {
 namespace net {
@@ -27,53 +32,22 @@ namespace net {
 #define YANET_ALL_EVENTS     3
 #define YANET_DONT_WAIT      4 
 
-#define YANET_NOMORE        -1
-
-class EventLoop;
-
 //event callback interface
 class EventCallBack {
  public:
      //Constructor
-     EventCallBack() : mask_(YANET_NONE) { }
+     EventCallBack() { }
 
-     virtual void HandleRead(EventLoop* ev, int fd, int mask)  = 0;
-     virtual void HandleWrite(EventLoop* ev, int fd, int mask) = 0;
+     //If We have multiple EventLoop object in one process, it may
+     //help to put eventloop pointer to callbacks
+     virtual void HandleRead (/*EventLoop* ev */int fd)  = 0;
+     virtual void HandleWrite(/*EventLoop* ev */int fd) = 0;
      virtual ~EventCallBack() {}
 
-     //not for encapulation, for easy to use.
-     int& Mask() { return mask_; }
- protected:
-     int mask_;
-};
-
-//timer callker interface
-class TimerCallBack {
- public:
-     //non-trival constructor
-     TimerCallBack(long long id, long sec, long ms) :
-         id_(id), when_sec_(sec), when_ms_(ms), next_(NULL) { }
-     
-     virtual ~TimerCallBack() {}
-
-     //timer interface
-     virtual int HandleTimer(EventLoop* ev, long long id) = 0;
-
- protected:
-     friend class EventLoop;
-
-     long long      id_;
-     long           when_sec_;
-     long           when_ms_;
-     TimerCallBack* next_;
 };
 
 class Poller {
  public:
-     Poller(EventLoop *ev) : ev_(ev) { };
-     
-     virtual ~Poller() {};
-
      //Init Poller
      //RETURN: 0:ok,  -1:erro
      virtual int InitPoller() = 0;
@@ -83,18 +57,22 @@ class Poller {
      virtual int AddEvent(int fd, int mask) = 0;
 
      //Delete a event from the poller
-     //RETURN: 0:ok,  -1:erro
-     virtual int DelEvent(int fd, int mask) = 0;
+     //RETURN: true: Del All Event(read&write), false: still have
+     //some event to poll
+     virtual bool DelEvent(int fd, int mask) = 0;
 
      //Poll for avaiable events.
-     //RETURN: >0: num of events. -1:error
-     virtual int PollEvent(struct timeval* tvp) = 0;
+     //put readable event in 'readable vec.', writeable
+     //event in 'writeable vec.'
+     virtual void PollEvent(struct timeval* tvp,
+                           std::vector<int>* readable,
+                           std::vector<int>* writeable) = 0;
 
      //Get poller name
-     virtual std::string GetName() const;
+     virtual std::string GetName() const = 0;
 
- protected:
-     EventLoop* const ev_;
+     virtual ~Poller() { }
+
 };
 
 class Selecter : public Poller {
@@ -104,17 +82,19 @@ class Selecter : public Poller {
      struct InternalData;
 
      //Constructor
-     Selecter(EventLoop *ev);
+     Selecter();
 
      ~Selecter();
 
-     int InitPoller();
+     int  InitPoller();
 
-     int AddEvent(int fd, int mask);
+     int  AddEvent(int fd, int mask);
 
-     int DelEvent(int fd, int mask);
+     bool  DelEvent(int fd, int mask);
 
-     int PollEvent(struct timeval* tvp);
+     void PollEvent(struct timeval* tvp,
+                   std::vector<int>* readable,
+                   std::vector<int>* writeable);
 
      std::string GetName() const {
          return "Selecter";
@@ -133,17 +113,19 @@ class Epoller : public Poller {
      //Poller private data
      struct InternalData;
 
-     Epoller(EventLoop *ev);
+     Epoller();
 
      ~Epoller();
 
-     int InitPoller();
+     int  InitPoller();
 
-     int AddEvent(int fd, int mask);
+     int  AddEvent(int fd, int mask);
 
-     int DelEvent(int fd, int delmask);
+     bool  DelEvent(int fd, int delmask);
 
-     int PollEvent(struct timeval* tvp);
+     void PollEvent(struct timeval* tvp,
+                   std::vector<int>* readable,
+                   std::vector<int>* writeable);
 
      std::string GetName() const {
          return "Epoller";
@@ -161,11 +143,6 @@ class EventLoop {
  public:
      typedef void BeforeSleepProc(EventLoop*);
 
-     struct FiredEvent {
-         int mask;
-         int fd;
-     };
-
      EventLoop();
      
      ~EventLoop();
@@ -182,13 +159,13 @@ class EventLoop {
      int AddEvent(int fd, int mask, EventCallBack* evt);
 
      //del a normal event to eventloop
-     //RETURN: 0:OK <0:fail
+     //caller are responsible for delete evt if neccessary.
      void DelEvent(int fd, int mask);
 
      //add a timer event to eventloop
      //milliseconds 毫秒
      //RETURN: 0:OK <0:fail
-     int AddTimer(TimerCallBack* te/*long long milliseconds*/);
+     int AddTimer(long long milliseconds, TimerCallBack* te);
 
      //del a timer event to eventloop
      //RETURN: 0:OK -1:fail
@@ -214,46 +191,38 @@ class EventLoop {
      }
 
  private:
-     TimerCallBack* SearchNearestTimer() const;
-     void GetTime(long* nowsec, long* nowms) const ;
-     void AddMilliSecondsToNow(long long miliseconds, 
-                               long* sec, long* ms) const;
- private:
      //disable copy
      EventLoop(const EventLoop&);
      void operator=(const EventLoop&);
-
-     //c++ friendship does not inherit.
-     friend class Selecter;
-     //if def linux
-     friend class Epoller;
 
      //callback function before entering block waitting
      BeforeSleepProc*  beforesleep_;
 
      //poller object
      Poller*           poller_;
-     //keep track max pollerable fd 
-     int               maxfd_;
-
-     //keep trace max timer fd generated
-     long long         next_timer_id_;
 
      //TODO: change it to variable length events
      //currenly everything is ok.
      EventCallBack*    events_[YANET_MAX_POLL_SIZE];
 
-     //keep track active events.
-     FiredEvent        fired_ [YANET_MAX_POLL_SIZE];
-
-     //timer list head
-     //TODO: we can implement timer more efficently,
-     //but we want to make it work first:-
-     TimerCallBack*    timer_evt_head_;
+     TimerManager*    timer_manager_;
 
      //stop the event loop
      int           stop_;
 };
+
+inline int EventLoop::AddTimer(long long milliseconds, TimerCallBack* te) {
+    return timer_manager_->AddTimer(milliseconds, te);
+}
+
+inline int EventLoop::DelTimer(long long id) {
+    return timer_manager_->DelTimer(id);
+}
+
+inline int EventLoop::ProcessTimerEvent() {
+    return timer_manager_->ProcessTimerEvent();
+}
+
 
 } //namespace net
 } //namespace yanetlib
