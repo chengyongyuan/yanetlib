@@ -112,3 +112,9 @@ TEST_F(CommonTest, TestInnerLog) {
     //COLIN_CHECK_LT(a, 1);
     //COLIN_CHECK_EQ(a, b);
 }
+
+TEST_F(CommonTest, ColorPrintTest) {
+    printf("THIS IS"ANSI_COLOR_GREEN" GREEN \n"ANSI_COLOR_RESET);
+    printf("THIS IS"ANSI_COLOR_RED" RED \n"ANSI_COLOR_RESET);
+    EXPECT_TRUE(true);
+}

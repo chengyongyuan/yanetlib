@@ -141,9 +141,10 @@ int YanetTcpServer(char* err, const char* bindaddr, int port) {
     
     memset(&sa, 0, sizeof(sa));
     sa.sin_family = AF_INET;
-    sa.sin_addr.s_addr = inet_addr(INADDR_ANY);
+    sa.sin_addr.s_addr = htonl(INADDR_ANY);
     sa.sin_port = htons(port);
-    if (bindaddr) {
+    //task "0.0.0.0" or "*" as INADDR_ANY
+    if (bindaddr && strcmp(bindaddr, "0.0.0.0") && strcmp(bindaddr, "*")) {
         if (inet_aton(bindaddr, &sa.sin_addr) == 0) {
             YanetSetError(err, "Invalid network address!\n");
             close(s);
@@ -158,6 +159,41 @@ int YanetTcpServer(char* err, const char* bindaddr, int port) {
     //magic 511 come from nginx!
     if (listen(s, 511) == -1) {
         YanetSetError(err, "listen: %s\n", strerror(errno));
+        close(s);
+        return YANET_ERR;
+    }
+    return s;
+}
+
+int YanetUdpServer(char* err, const char* bindaddr, int port) {
+    int s, reuse = 1;
+    struct sockaddr_in sa;
+
+    if ((s = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
+        YanetSetError(err, "socket: %s\n", strerror(errno));
+        return YANET_ERR;
+    }
+    //udp server reuse addr
+    if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) == -1) {
+        YanetSetError(err, "setsockopt(SO_REUSEADDR): %s\n", strerror(errno));
+        close(s);
+        return YANET_ERR;
+    }
+    
+    memset(&sa, 0, sizeof(sa));
+    sa.sin_family = AF_INET;
+    sa.sin_addr.s_addr = htonl(INADDR_ANY);
+    sa.sin_port = htons(port);
+    //task "0.0.0.0" or "*" as INADDR_ANY
+    if (bindaddr && strcmp(bindaddr, "0.0.0.0") && strcmp(bindaddr, "*")) {
+        if (inet_aton(bindaddr, &sa.sin_addr) == 0) {
+            YanetSetError(err, "Invalid network address!\n");
+            close(s);
+            return YANET_ERR;
+        }
+    }
+    if (bind(s, (struct sockaddr*)&sa, sizeof(sa)) == -1) {
+        YanetSetError(err, "bind: %s\n", strerror(errno));
         close(s);
         return YANET_ERR;
     }

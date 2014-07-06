@@ -29,6 +29,13 @@ typedef uint16_t uint16;
 typedef uint32_t uint32;
 typedef uint64_t uint64;
 
+//printf / shell print with color
+//printf(ANSI_COLOR_GREEN """ ANSI_COLOR_RESET
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
 //USEFULL MACROS...
 template <bool>
 struct CompileAssert {

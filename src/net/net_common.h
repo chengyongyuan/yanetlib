@@ -67,6 +67,12 @@ int YanetAccept(char* err, int serversock, char* ip, int* port);
 //RETURN: serverfd if ok, YANET_ERR if fail
 int YanetTcpServer(char* err, const char* bindaddr, int port);
 
+//Create a tcp server socket. if bindaddr is not NULL, bind
+//on this addr, or else bind on *, if err is not NULL, put
+//err msg in err buf.
+//RETURN: serverfd if ok, YANET_ERR if fail
+int YanetUdpServer(char* err, const char* bindaddr, int port);
+
 //Do a DNS query. caller must make sure ip buffer is longer
 //enough to hold resulting ip address. if err is no NULL,put
 //err msg in err buf.
