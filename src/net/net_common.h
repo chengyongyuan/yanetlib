@@ -19,6 +19,11 @@ enum {
     YANET_MAX_ERR_SIZE = 256,
 };
 
+//set fd to close on exit. if err is not NULL
+//put error msg in err buffer
+//RETURN: YANET_OK if ok, YANET_ERR if fail
+int YanetCloseOnExec(char* err, int fd);
+
 //set fd to nonblocking mode. if err is not NULL
 //put error msg in err buffer
 //RETURN: YANET_OK if ok, YANET_ERR if fail

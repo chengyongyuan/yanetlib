@@ -25,6 +25,20 @@ static void YanetSetError(char* err, const char*fmt, ...) {
     va_end(ap);
 }
 
+int YanetCloseOnExec(char* err, int fd) {
+    int flags;
+
+    if ((flags = fcntl(fd, F_GETFD)) == -1) {
+        YanetSetError(err, "fcntl(F_GETFD): %s\n", strerror(errno));
+        return YANET_ERR;
+    }
+    if (fcntl(fd, F_SETFL, flags | O_CLOEXEC) == -1) {
+        YanetSetError(err, "fcntl(F_SETFD): %s\n", strerror(errno));
+        return YANET_ERR;
+    }
+    return YANET_OK;
+}
+
 int YanetNonBlock(char* err, int fd) {
     int flags;
 
