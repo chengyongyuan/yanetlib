@@ -7,6 +7,9 @@
 namespace yanetlib {
 namespace comm {
 
+//empty callback function
+void DoNothing() { }
+
 void DefaultLogHandler(LogLevel level, const char* filename,
         int line, const std::string& message) {
     static const char* level_names[] = {"INFO", "WARNNING", "ERROR", "FATAL"};

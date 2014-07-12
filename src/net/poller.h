@@ -17,7 +17,6 @@
 #include <sys/types.h>
 #include <string>
 #include <vector>
-#include "timer.h"
 
 namespace yanetlib {
 namespace net {
@@ -26,25 +25,6 @@ namespace net {
 #define YANET_NONE          0
 #define YANET_READABLE      1
 #define YANET_WRITABLE      2
-
-#define YANET_FILE_EVENTS    1
-#define YANET_TIME_EVENTS    2
-#define YANET_ALL_EVENTS     3
-#define YANET_DONT_WAIT      4 
-
-//event callback interface
-class EventCallBack {
- public:
-     //Constructor
-     EventCallBack() { }
-
-     //If We have multiple EventLoop object in one process, it may
-     //help to put eventloop pointer to callbacks
-     virtual void HandleRead (/*EventLoop* ev */int fd)  = 0;
-     virtual void HandleWrite(/*EventLoop* ev */int fd) = 0;
-     virtual ~EventCallBack() {}
-
-};
 
 class Poller {
  public:
@@ -138,91 +118,6 @@ class Epoller : public Poller {
 
      InternalData* data_;
 };
-
-class EventLoop {
- public:
-     typedef void BeforeSleepProc(EventLoop*);
-
-     EventLoop();
-     
-     ~EventLoop();
-
-     //inteface
-     //RETURN: 0:OK  <0:fail
-     int InitEventLoop();
-
-     //set the stop flag of eventloop
-     void StopEventLoop() { stop_ = 1; }
-
-     //add a normal event to eventloop
-     //RETURN: 0:OK <0:fail
-     int AddEvent(int fd, int mask, EventCallBack* evt);
-
-     //del a normal event to eventloop
-     //caller are responsible for delete evt if neccessary.
-     void DelEvent(int fd, int mask);
-
-     //add a timer event to eventloop
-     //milliseconds 毫秒
-     //RETURN: 0:OK <0:fail
-     int AddTimer(long long milliseconds, TimerCallBack* te);
-
-     //del a timer event to eventloop
-     //RETURN: 0:OK -1:fail
-     int DelTimer(long long id);
-
-     //process timer event.
-     //RETURN: >=0: number of events processed
-     int ProcessTimerEvent();
-
-     //process normal event.
-     //RETURN: >=0: number of events processed
-     int ProcessEvent(int flags);
-
-     void SetBeforeSleepProc(BeforeSleepProc* beforesleep) { 
-         beforesleep_ = beforesleep;
-     }
-
-     //Run event loop
-     void Run();
-
-     std::string GetPollerName() const {
-         return poller_->GetName();
-     }
-
- private:
-     //disable copy
-     EventLoop(const EventLoop&);
-     void operator=(const EventLoop&);
-
-     //callback function before entering block waitting
-     BeforeSleepProc*  beforesleep_;
-
-     //poller object
-     Poller*           poller_;
-
-     //TODO: change it to variable length events
-     //currenly everything is ok.
-     EventCallBack*    events_[YANET_MAX_POLL_SIZE];
-
-     TimerManager*    timer_manager_;
-
-     //stop the event loop
-     int           stop_;
-};
-
-inline int EventLoop::AddTimer(long long milliseconds, TimerCallBack* te) {
-    return timer_manager_->AddTimer(milliseconds, te);
-}
-
-inline int EventLoop::DelTimer(long long id) {
-    return timer_manager_->DelTimer(id);
-}
-
-inline int EventLoop::ProcessTimerEvent() {
-    return timer_manager_->ProcessTimerEvent();
-}
-
 
 } //namespace net
 } //namespace yanetlib

@@ -1,8 +1,13 @@
 #include <string.h>
 #include <sys/select.h>
+#include <stdio.h>
+#include <errno.h>
 //linux only
 #include <sys/epoll.h>
 #include "poller.h"
+
+#include "comm/common.h"
+#include "net_common.h"
 
 namespace yanetlib {
 namespace net {
@@ -161,128 +166,6 @@ void Epoller::PollEvent(struct timeval* tvp,
     }
 }
 
-//--------------------------------------------------------------------------------
-//Event Loop Implementation
-//
-//--------------------------------------------------------------------------------
-EventLoop::EventLoop() :
-    poller_(NULL), timer_manager_(NULL), stop_(0) { }
-
-EventLoop::~EventLoop() {
-    //delete can handle NULL
-    delete poller_;
-}
-
-int EventLoop::InitEventLoop() {
-    if ((poller_ = new Epoller) == NULL) return -1;
-    if ((timer_manager_ = new TimerManager) == NULL) return -3;
-    if (poller_->InitPoller() != 0) return -3;
-    return 0;
-}
-
-int EventLoop::AddEvent(int fd, int mask, EventCallBack* evt) {
-    if (fd > YANET_MAX_POLL_SIZE) return -1;
-
-    events_[fd] = evt;
-    if (poller_->AddEvent(fd, mask) != 0)
-        return -3;
-    
-    return 0;
-}
-
-void EventLoop::DelEvent(int fd, int mask) {
-    if (fd > YANET_MAX_POLL_SIZE) return ;
-    EventCallBack* e = events_[fd];
-
-    if (e == NULL) return ;
-    if (poller_->DelEvent(fd, mask)) {
-        events_[fd] = NULL;
-    }
-}
-
-//take from REDIS
-/* Process every pending time event, then every pending file event
- * (that may be registered by time event callbacks just processed).
- * Without special flags the function sleeps until some file event
- * fires, or when the next time event occurrs (if any).
- *
- * If flags is 0, the function does nothing and returns.
- * if flags has YANET_ALL_EVENTS set, all the kind of events are processed.
- * if flags has YANET_FILE_EVENTS set, file events are processed.
- * if flags has YANET_TIME_EVENTS set, time events are processed.
- * if flags has YANET_DONT_WAIT set the function returns ASAP until all
- * the events that's possible to process without to wait are processed.
- *
- * The function returns the number of events processed. */
-int EventLoop::ProcessEvent(int flags) {
-    int processed = 0;
-
-    //Nothing to do, just return ASAP
-    if (!(flags & YANET_TIME_EVENTS) && !(flags & YANET_FILE_EVENTS)) return 0;
-
-    if (/*maxfd_ != -1 ||*/
-       ((flags & YANET_TIME_EVENTS) && !(flags & YANET_DONT_WAIT))) {
-        TimerListObject* shortest = NULL;
-        struct timeval tv, *tvp = NULL;
-        if ((flags & YANET_TIME_EVENTS) && !(flags & YANET_DONT_WAIT)) 
-            shortest = timer_manager_->SearchNearestTimer();
-        if (shortest) {
-            long nowsec, nowms;
-
-            //calculate the time missing for nearest timer for fire
-            GetTime(&nowsec, &nowms);
-            tvp = &tv;
-            tvp->tv_sec = shortest->when_sec - nowsec;
-            if (shortest->when_ms < nowms) {
-                tvp->tv_usec = ((shortest->when_ms+1000 - nowms) * 1000);
-                tvp->tv_sec --;
-            } else {
-                tvp->tv_usec = (shortest->when_ms - nowms) * 1000;
-            }
-            if (tvp->tv_sec < 0) tvp->tv_sec = 0;
-            if (tvp->tv_usec < 0) tvp->tv_usec = 0;
-        } else {
-            //if we have to check events, but we set the DONT_WAIT flags
-            //we need set tv to zero, so that we can return ASAP.
-            if (flags & YANET_DONT_WAIT) {
-                tv.tv_sec = tv.tv_usec = 0;
-                tvp = &tv;
-            } else {
-                //otherwise we can just block
-                tvp = NULL;
-            }
-        }
-
-        vector<int> readable, writeable;
-        poller_->PollEvent(tvp, &readable, &writeable);
-        for (size_t i = 0; i < readable.size(); ++i) {
-            int fd = readable[i];
-            EventCallBack* e = events_[fd];
-            if (e != NULL) e->HandleRead(fd);
-            processed++;
-        }
-        for (size_t i = 0; i < writeable.size(); ++i) {
-            int fd = writeable[i];
-            EventCallBack* e = events_[fd];
-            if (e != NULL) e->HandleWrite(fd);
-            processed++;
-        }
-
-    }
-    //check timer event
-    if (flags & YANET_TIME_EVENTS) 
-        processed += ProcessTimerEvent();
-    return processed;
-}
-
-void EventLoop::Run() {
-    stop_ = 0;
-    while (!stop_) {
-        if (beforesleep_ != NULL)
-            beforesleep_(this);
-        ProcessEvent(YANET_ALL_EVENTS);
-    }
-}
 
 } //namespace net
 } //namespace yanetlib

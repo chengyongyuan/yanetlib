@@ -1,9 +1,12 @@
 #include <sys/types.h>
 #include <assert.h>
+#include <signal.h>
+#include <stdio.h>
 #include "net_common.h"
 #include "poller.h"
-#include "../comm/config_parser.h"
-#include "../comm/common.h"
+#include "comm/config_parser.h"
+#include "comm/common.h"
+#include "eventloop.h"
 
 #include <string>
 #include <vector>
@@ -94,12 +97,33 @@ bool EchoSrv::InitSrv(const string& conf) {
     return true;
 }
 
+EventLoop evloop;
+
+void MySigHandler() {
+    static int cnt;
+    fprintf(stderr, "this is a test!\n");
+    if (cnt++ == 2) { evloop.DelSigEvent(SIGINT); }
+    
+}
+
+class Dummy {
+ public:
+    void MySigHandler() {
+        fprintf(stderr, "this is a method function\n");
+        if (cnt++ == 2) { evloop.DelSigEvent(SIGTERM); }
+    }
+    static int cnt;
+};
+int Dummy::cnt;
+
 int main(int argc, char **argv)
 {
     EchoSrv srv;
-    EventLoop evloop;
+    Dummy* dummy = new Dummy;
     assert(srv.InitSrv("srv.conf"));
     assert(0 == evloop.InitEventLoop());
+    assert(0 == evloop.AddSigEvent(SIGINT, NewPermanentCallback(MySigHandler)));
+    assert(0 == evloop.AddSigEvent(SIGTERM, NewPermanentCallback(dummy, &Dummy::MySigHandler)));
     evloop.Run();
     return 0;
 }

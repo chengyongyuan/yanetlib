@@ -63,8 +63,8 @@ netcomm_unittest: netcomm_unittest.o net_common.o
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
 	./netcomm_unittest
 
-timer_unittest: timer_unittest.o poller.o timer.o net_common.o
-	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread 
+timer_unittest: timer_unittest.o 
+	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread  libnetcomm.a
 eventloop_unittest: eventloop_unittest.o 
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread libnetcomm.a ../comm/libcomm.a
 
