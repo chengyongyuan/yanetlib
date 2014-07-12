@@ -90,6 +90,12 @@ int YanetResolve(char* err, const char* host, char* ip);
 int YanetConnect(char* err, const char* ip, int port);
 int YanetNonBlockConnect(char* err, const char* ip, int port);
 
+//Make a process become daemon proces. if nochdir is  zero,
+//change the calling process's working directory to "/',
+//if noclose is zero, close STDIN, STDOUT, STDERR.
+//RETURN: YANET_OK if ok, YANET_ERR if fail
+int YanetDaemonize(int nochdir, int noclose = 1);
+
 } //namespace net
 } //namespace yanetlib
 

@@ -1,6 +1,8 @@
 #include <sys/types.h>
 #include <assert.h>
 #include <signal.h>
+#include <string.h>
+#include <errno.h>
 #include <stdio.h>
 #include "net_common.h"
 #include "poller.h"
@@ -118,6 +120,8 @@ int Dummy::cnt;
 
 int main(int argc, char **argv)
 {
+    assert(0 == YanetDaemonize(1));
+    printf("should not seen any message!\n");
     EchoSrv srv;
     Dummy* dummy = new Dummy;
     assert(srv.InitSrv("srv.conf"));

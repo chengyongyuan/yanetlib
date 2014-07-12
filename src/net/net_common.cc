@@ -2,7 +2,10 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <fcntl.h>
+#include <signal.h>
+#include <sys/stat.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -281,6 +284,55 @@ int YanetConnect(char* err, const char* ip, int port) {
 
 int YanetNonBlockConnect(char* err, const char* ip, int port) {
     return YanetGenericConnect(err, ip, port, YANET_CONNECT_FLAG_NONBLOCK);
+}
+
+int YanetDaemonize(int nochdir, int noclose) {
+#if defined(__linux) && defined(_BSD_SOURCE)
+    return daemon(nochdir, noclose);
+#else
+    //1.fork and exit parent
+    pid_t pid;
+    if ((pid = fork()) < 0) {
+        return -1;
+    } else if (pid > 0) {
+        exit(EXIT_SUCCESS);
+    }
+
+    //2. umask
+    umask(0);
+
+    //3. sid
+    if (setsid() < 0) { return -3; }
+
+    signal(SIGCHLD, SIG_IGN);
+    signal(SIGHUP,  SIG_IGN);
+
+    if ((pid = fork()) < 0) {
+        return -5;
+    } else if (pid > 0) {
+        exit(EXIT_SUCCESS);
+    }
+
+    //4.chdir
+    if (!nochdir) {
+        if (chdir("/")  < 0) return -7;
+    }
+
+    //5. close fd
+    int closefd_start = noclose ? 3 : 0;
+    for (int i = closefd_start; i < sysconf(_SC_OPEN_MAX); ++i) {
+        close(i);
+    }
+
+    if (closefd_start = 0) { //make /dev/null -> 0,1,2
+        int fd0 = open("/dev/null", O_RDWR);
+        int fd1 = dup(0);
+        int fd2 = dup(0);
+        if (fd0 != 0 || fd1 != 1 || fd2 != 2) return -9;
+    }
+
+    return 0;
+#endif
 }
 
 } //namespace net
