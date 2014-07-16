@@ -125,21 +125,25 @@ bool Buffer<BUF_NODE_SZ>::GetSpace(char *& buf, int & len) {
 template <int BUF_NODE_SZ>
 void Buffer<BUF_NODE_SZ>::PushData(int len) {
     _write_node->used += len;
+    if (_write_node->used > BUF_NODE_SZ)
+        _write_node->used = BUF_NODE_SZ;
     if (_write_node->used == BUF_NODE_SZ && _write_node != _tail) {
         //move buffer to next node
         _write_node = _write_node->next;
-        printf("DEBUG: MOVE TO NEXT NODE\n");
     }
 }
 
 template <int BUF_NODE_SZ>
 void Buffer<BUF_NODE_SZ>::PopData(int len) {
     _read_pos += len;
+    if (_read_pos > _head->used) 
+        _read_pos = _head->used;
     //move empty head node to tail
     if (_read_pos == _head->used && _head != _write_node) {
         BufferNode* cur = _head;
         _head = cur->next;
         cur->next = _tail->next;
+        _tail->next = cur;
         _tail = cur;
         cur->used = 0;
         cur->next = NULL;
@@ -147,7 +151,9 @@ void Buffer<BUF_NODE_SZ>::PopData(int len) {
             _tail = _head;
             return ;
         }
-        printf("DEBUG: MOVE HEAD\n");
+        //push the _write_node forward, so that next
+        //GetSpace will success. Dont leave the to caller!
+        PushData(0);
     } // else, Next Get Data will fail
 }
 

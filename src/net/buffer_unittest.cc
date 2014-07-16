@@ -30,14 +30,14 @@ TEST_F(BufferUnittest, BasicTest) {
     EXPECT_TRUE(buffer.GetSpace(buf, len));
     EXPECT_TRUE(buf && len == 32);
     buffer.PushData(32);
+
     EXPECT_TRUE(buffer.GetSpace(buf, len));
     EXPECT_TRUE(buf && len == 32);
-    buffer.PushData(32);
+    buffer.PushData(33);
     EXPECT_FALSE(buffer.GetSpace(buf, len));
-    buffer.PopData(16);
-    EXPECT_FALSE(buffer.GetSpace(buf, len));
-    EXPECT_TRUE(len == 0);
-    buffer.PopData(16);
+
+    //buffer.PushData(0);
+    buffer.PopData(64);
     EXPECT_TRUE(buffer.GetSpace(buf, len));
-    EXPECT_TRUE(len == 32);
+    EXPECT_TRUE(buf && len == 32);
 }
