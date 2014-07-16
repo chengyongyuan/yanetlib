@@ -41,7 +41,7 @@ LIB   = $(GTEST_DIR)/gtest_main.a
 # created to the list.
 TARGET = libnetcomm.a
 
-UNITTEST = netcomm_unittest timer_unittest eventloop_unittest
+UNITTEST = netcomm_unittest timer_unittest eventloop_unittest buffer_unittest
 
 all : $(TARGET)
 
@@ -62,6 +62,9 @@ unittest: $(UNITTEST)
 netcomm_unittest: netcomm_unittest.o net_common.o 
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
 	./netcomm_unittest
+buffer_unittest: buffer_unittest.o 
+	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
+	./buffer_unittest
 
 timer_unittest: timer_unittest.o 
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread  libnetcomm.a
