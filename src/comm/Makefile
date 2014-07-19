@@ -43,7 +43,7 @@ TARGET = libcomm.a
 
 UNITTEST = strutil_unittest datetime_unittest md5_unittest common_unittest tinyxml2_unittest \
 		   simpleconf_unittest rotatelog_unittest fileutil_unittest processutil_unittest     \
-		   base64_unittest
+		   base64_unittest threadpool_unittest
 
 all : $(TARGET)
 
@@ -88,6 +88,9 @@ rotatelog_unittest: rotatelog_unittest.o rotate_log.o datetime.o
 base64_unittest: base64_unittest.o  base64.o common.o
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
 	./base64_unittest
+threadpool_unittest: threadpool_unittest.o  common.o thr_pool.o
+	g++ $(CXXFLAGS) $(INCL) -o $@ $^ -lpthread $(LIB)
+	./threadpool_unittest
 #tinyxml2 has its own unittest, now using gtest..
 tinyxml2_unittest: tinyxml2_unittest.o tinyxml2.o
 	g++ $(CXXFLAGS) $(INCL) -o $@ $^ 

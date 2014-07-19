@@ -96,5 +96,9 @@ void Mutex::UnLock() {
     assert(ret == 0);
 }
 
+pthread_mutex_t* Mutex::GetRaw() {
+    return &internal_->mutex;
+}
+
 } //namespace comm
 } //namespace yanetlib

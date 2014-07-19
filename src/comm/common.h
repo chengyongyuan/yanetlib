@@ -11,6 +11,8 @@
 //Author: colincheng 334089103@qq.com
 
 #include <stdint.h>
+#include <assert.h>
+#include <stdlib.h>
 #include <string>
 
 namespace yanetlib {
@@ -54,6 +56,13 @@ struct CompileAssert {
 #define GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(TypeName)    \
     TypeName(const TypeName&);                         \
     void operator=(const TypeName&);                   \
+
+//safe assert
+#ifndef NDEBUG
+#define VERIFY(expr) do { if (!(expr)) abort(); } while(0)
+#else
+#define VERIFY(expr) assert(expr)
+#endif
 
 #undef PREDICT_TRUE
 #undef PREDICT_FALSE
@@ -162,6 +171,9 @@ class Mutex {
 
     //Release the lock. caller must hold this lock.
     void UnLock();
+
+    //Get Underlying raw mutuex pointer
+    pthread_mutex_t* GetRaw();
  private:
     struct Internal;
     Internal* internal_;
