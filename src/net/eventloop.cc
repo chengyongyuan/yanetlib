@@ -193,6 +193,7 @@ void EventLoop::DelEvent(int fd, int mask) {
 
     if (e == NULL) return ;
     if (poller_->DelEvent(fd, mask)) {
+        delete events_[fd];
         events_[fd] = NULL;
     }
 }

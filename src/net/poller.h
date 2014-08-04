@@ -25,6 +25,7 @@ namespace net {
 #define YANET_NONE          0
 #define YANET_READABLE      1
 #define YANET_WRITABLE      2
+#define YANET_MASK          (YANET_READABLE | YANET_WRITABLE)
 
 class Poller {
  public:

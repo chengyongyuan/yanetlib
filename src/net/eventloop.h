@@ -96,7 +96,9 @@ class EventLoop {
      //set the stop flag of eventloop
      void StopEventLoop() { stop_ = 1; }
 
-     //add a normal event to eventloop
+     //add a normal event to eventloop, EventCallBack must be
+     //a create from heap, and EventLoop is responsible for delete
+     //it
      //RETURN: 0:OK <0:fail
      int AddEvent(int fd, int mask, EventCallBack* evt);
 

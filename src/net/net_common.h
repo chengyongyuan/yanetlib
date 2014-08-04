@@ -10,6 +10,8 @@
 //
 //colincheng 2014/6/29
 
+#include <string>
+
 namespace yanetlib {
 namespace net {
 
@@ -64,7 +66,7 @@ int YanetWriteN(int fd, char* buff, int count);
 //port in 'ip' and 'port'. if err is not NULL, put
 //err msg in err buf.
 //RETURN: client sockfd if ok, YANET_ERR if fail
-int YanetAccept(char* err, int serversock, char* ip, int* port);
+int YanetAccept(char* err, int serversock, std::string* ip, int* port);
 
 //Create a tcp server socket. if bindaddr is not NULL, bind
 //on this addr, or else bind on *, if err is not NULL, put

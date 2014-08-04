@@ -119,10 +119,14 @@ int Epoller::AddEvent(int fd, int mask) {
     //we need ADD
     int op = data_->oldmask[fd] == YANET_NONE ? EPOLL_CTL_ADD :
              EPOLL_CTL_MOD;
+    int oldmask = data_->oldmask[fd];
+
     ee.events = 0;
     //merge old
     data_->oldmask[fd] |= mask;
     mask = data_->oldmask[fd];
+    //no need to invoke epoll_ctl
+    if (oldmask == mask) return 0;
     if (mask & YANET_READABLE) ee.events |= EPOLLIN;
     if (mask & YANET_WRITABLE) ee.events |= EPOLLOUT;
     ee.data.u64 = 0;

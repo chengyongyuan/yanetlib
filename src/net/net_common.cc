@@ -15,6 +15,8 @@
 #include <stdarg.h>
 #include "net_common.h"
 
+#include <string>
+
 namespace yanetlib {
 namespace net {
 
@@ -126,7 +128,7 @@ int YanetWriteN(int fd, char* buff, int count) {
     return totlen;
 }
 
-int YanetAccept(char* err, int serversock, char* ip, int* port) {
+int YanetAccept(char* err, int serversock, std::string* ip, int* port) {
     int fd;
     struct sockaddr_in sa;
     unsigned int sa_len;
@@ -144,9 +146,9 @@ int YanetAccept(char* err, int serversock, char* ip, int* port) {
         }
         break;
     }
-    if (ip) strcpy(ip, inet_ntoa(sa.sin_addr));
+    if (ip) *ip = inet_ntoa(sa.sin_addr);
     if (port) *port = ntohs(sa.sin_port);
-    return YANET_OK;
+    return fd;
 }
 
 int YanetTcpServer(char* err, const char* bindaddr, int port) {
