@@ -98,7 +98,11 @@ int YanetReadN(int fd, char* buff, int count) {
     while (totlen != count) {
         nread = read(fd, buff, count-totlen);
         if (nread == 0) return totlen;
-        if (nread == -1) return -1;
+        if (nread == -1) {
+            if (errno == EINTR) continue;
+            if (errno == EAGAIN) break;
+            return -1;
+        }
         totlen += nread;
         buff += nread;
     }
@@ -111,7 +115,11 @@ int YanetWriteN(int fd, char* buff, int count) {
     while (totlen != count) {
         nwrite = write(fd, buff, count-totlen);
         if (nwrite == 0) return totlen;
-        if (nwrite == -1) return -1;
+        if (nwrite == -1) {
+            if (errno == EINTR) continue;
+            if (errno == EAGAIN) break;
+            return -1;
+        }
         totlen += nwrite;
         buff += nwrite;
     }

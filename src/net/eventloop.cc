@@ -127,10 +127,10 @@ int SignalManager::DelSignalHandler(int signo) {
     return 0;
 }
 
-void SignalManager::HandleWrite(int fd) {
+void SignalManager::HandleWrite(EventLoop* ev, int fd) {
 }
 
-void SignalManager::HandleRead(int fd) {
+void SignalManager::HandleRead(EventLoop* ev, int fd) {
     unsigned char signo;
     unsigned char sigbuf[1024];
 
@@ -255,13 +255,13 @@ int EventLoop::ProcessEvent(int flags) {
         for (size_t i = 0; i < readable.size(); ++i) {
             int fd = readable[i];
             EventCallBack* e = events_[fd];
-            if (e != NULL) e->HandleRead(fd);
+            if (e != NULL) e->HandleRead(this, fd);
             processed++;
         }
         for (size_t i = 0; i < writeable.size(); ++i) {
             int fd = writeable[i];
             EventCallBack* e = events_[fd];
-            if (e != NULL) e->HandleWrite(fd);
+            if (e != NULL) e->HandleWrite(this, fd);
             processed++;
         }
 

@@ -82,8 +82,8 @@ class EchoSrv : public EventCallBack {
      bool InitSrv(const string& conf);
 
      //interface
-     void HandleRead(int fd)  {};
-     void HandleWrite(int fd) {};
+     void HandleRead(EventLoop* ev, int fd)  {};
+     void HandleWrite(EventLoop* ev, int fd) {};
 
  private:
      vector<SockAddr> tcp_addr_;

@@ -27,6 +27,7 @@ namespace net {
 #define MAX_SIGNAL_EVENT     64
 #define CallBack yanetlib::comm::Closure
 
+class EventLoop;
 //event callback interface
 class EventCallBack {
  public:
@@ -35,10 +36,10 @@ class EventCallBack {
 
      //If We have multiple EventLoop object in one process, it may
      //help to put eventloop pointer to callbacks
-     virtual void HandleRead (/*EventLoop* ev */int fd)  = 0;
-     virtual void HandleWrite(/*EventLoop* ev */int fd) = 0;
-     virtual ~EventCallBack() {}
+     virtual void HandleRead (EventLoop* ev, int fd)  = 0;
+     virtual void HandleWrite(EventLoop* ev, int fd) = 0;
 
+     virtual ~EventCallBack() {}
 };
 
 class SignalManager : public EventCallBack {
@@ -65,8 +66,8 @@ class SignalManager : public EventCallBack {
      int GetFd() const ;
  private:
      //EventCallBack inteface.
-     void HandleRead(int fd);
-     void HandleWrite(int fd);
+     void HandleRead(EventLoop* ev, int fd);
+     void HandleWrite(EventLoop* ev, int fd);
 
  private:
      //disable copy
