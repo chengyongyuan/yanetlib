@@ -19,6 +19,8 @@ struct RemoteInfo {
     int         rmt_port; //remote port
 };
 
+class UdpHandler;
+class TcpHandler;
 //interface for proto handler
 class NetHandler : public EventCallBack {
  public:
@@ -27,6 +29,9 @@ class NetHandler : public EventCallBack {
 
      //interface from EventCallBack
      virtual void HandleWrite(EventLoop* ev, int fd) = 0;
+
+     //interface from EventCallBack
+     virtual void HandleLoop(EventLoop* ev, int fd)  = 0;
 
      //invoke when error happenen
      virtual void HandleError(EventLoop* ev, int fd) = 0;
@@ -47,9 +52,7 @@ class NetHandler : public EventCallBack {
 //handler for procssing tcp server socket
 class ListenHandler : public EventCallBack {
  public:
-     //remove a protocol handler. poller will release it.
-     ListenHandler(EventCallBack* proto_handler) : _handler(proto_handler) {
-     }
+     ListenHandler() {}
 
      void HandleRead(EventLoop* ev, int fd) {
          RemoteInfo rmt;
@@ -58,24 +61,30 @@ class ListenHandler : public EventCallBack {
              COLIN_LOG(ERROR) << "Accept client error!\n";
              return ;
          }
-         ev->AddEvent(cfd, YANET_READABLE, _handler);
          YanetNonBlock(NULL, cfd);
+         //ev->AddEvent(cfd, YANET_READABLE, _handler);
+         SetNetHandler(ev, cfd);
          HandleAccept(ev, cfd, rmt);
      }
 
      //nothing to do
      void HandleWrite(EventLoop* ev, int fd) { }
 
+     //currently do nothings
+     virtual void HandleLoop(EventLoop* ev,  int fd) { }
+
      //template method, invoke when successfully accept a client
      //default do nothing..
      virtual void HandleAccept(EventLoop* ev, int cfd, RemoteInfo rmt) { }
+
+     //must implement to specify user define TcpHandler to
+     //handler logic.
+     virtual void SetNetHandler(EventLoop* ev, int fd) = 0;
 
  private:
      //disable evil
      ListenHandler(const ListenHandler& );
      void operator=(const ListenHandler& );
- private:
-    EventCallBack * _handler;
 };
 
 //proto handler for udp. user should inherit from this class
@@ -90,6 +99,8 @@ class UdpHandler : public NetHandler {
 
      void HandleWrite(EventLoop* ev, int fd);
 
+     //do nothing
+     virtual void HandleLoop(EventLoop* ev, int fd) { }
  private:
      UdpHandler(const UdpHandler& );
      void operator=(const UdpHandler&);
@@ -103,7 +114,7 @@ class UdpHandler : public NetHandler {
 //when implement a tcp server
 class TcpHandler : public NetHandler {
  public:
-     TcpHandler();
+      explicit TcpHandler(long expire_sec);
 
      ~TcpHandler();
 
@@ -111,12 +122,18 @@ class TcpHandler : public NetHandler {
 
      void HandleWrite(EventLoop* ev, int fd);
 
+     void HandleLoop(EventLoop* ev, int fd);
+
      //tcp handler's interface.invoke when perr socket close
-     virtual void HandleClose(EventLoop*ev, int fd) = 0;
+     virtual void HandleClose(EventLoop* ev, int fd) = 0;
 
  private:
      TcpHandler(const TcpHandler&);
      void operator=(const TcpHandler&);
+ private:
+     time_t creat_time_;
+     time_t last_access_time_;
+     long expire_sec_;
  protected:
      Buffer* _rbuf;
      Buffer* _wbuf;

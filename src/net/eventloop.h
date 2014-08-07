@@ -1,6 +1,8 @@
 #ifndef YANETLIB_NET_EVENTLOOP_H
 #define YANETLIB_NET_EVENTLOOP_H
 
+#include <set>
+
 #include "comm/common.h"
 #include "timer.h"
 #include "poller.h"
@@ -21,8 +23,9 @@ namespace net {
 
 #define YANET_FILE_EVENTS    1
 #define YANET_TIME_EVENTS    2
-#define YANET_ALL_EVENTS     3
-#define YANET_DONT_WAIT      4 
+#define YANET_SIGNAL_EVENTS  4
+#define YANET_ALL_EVENTS     7
+#define YANET_DONT_WAIT      8 
 
 #define MAX_SIGNAL_EVENT     64
 #define CallBack yanetlib::comm::Closure
@@ -38,6 +41,7 @@ class EventCallBack {
      //help to put eventloop pointer to callbacks
      virtual void HandleRead (EventLoop* ev, int fd)  = 0;
      virtual void HandleWrite(EventLoop* ev, int fd) = 0;
+     virtual void HandleLoop(EventLoop* ev, int fd) = 0;
 
      virtual ~EventCallBack() {}
 };
@@ -68,6 +72,7 @@ class SignalManager : public EventCallBack {
      //EventCallBack inteface.
      void HandleRead(EventLoop* ev, int fd);
      void HandleWrite(EventLoop* ev, int fd);
+     void HandleLoop(EventLoop* ev, int fd) { }
 
  private:
      //disable copy
@@ -84,7 +89,18 @@ class SignalManager : public EventCallBack {
 class EventLoop {
  public:
      typedef void BeforeSleepProc(EventLoop*);
+     struct EventID {
+        int efd;
+        EventCallBack* e;
+        EventID(int fd, EventCallBack* ee) : efd(fd), e(ee) { }
+        bool operator<(const EventID& r) const { return efd < r.efd; }
+        bool operator=(const EventID& r) const { return efd == r.efd; }
+     } ;
 
+     enum {
+         //mininum poller wait time in ms.
+         MIN_EVENT_WAIT_TIME = 10,
+     };
      EventLoop();
      
      ~EventLoop();
@@ -134,19 +150,23 @@ class EventLoop {
 
      //process normal event.
      //RETURN: >=0: number of events processed
-     int ProcessEvent(int flags);
+     int ProcessEvent(int flags, int wait_ms);
 
      void SetBeforeSleepProc(BeforeSleepProc* beforesleep) { 
          beforesleep_ = beforesleep;
      }
 
-     //Run event loop
-     void Run();
+     //Run event loop. if wait_ms == -1, then block when
+     //not event occur.
+     void Run(int wait_ms = -1);
 
      std::string GetPollerName() const {
          return poller_->GetName();
      }
 
+ private:
+     //do something every event loop
+     void HandleLoop();
  private:
      //disable copy
      EventLoop(const EventLoop&);
@@ -161,6 +181,9 @@ class EventLoop {
      //TODO: change it to variable length events
      //currenly everything is ok.
      EventCallBack*    events_[YANET_MAX_POLL_SIZE];
+
+     //store currenly effect event.
+     std::set<EventID> events_set_;
 
      TimerManager*    timer_manager_;
 

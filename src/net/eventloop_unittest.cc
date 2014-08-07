@@ -84,6 +84,7 @@ class EchoSrv : public EventCallBack {
      //interface
      void HandleRead(EventLoop* ev, int fd)  {};
      void HandleWrite(EventLoop* ev, int fd) {};
+     void HandleLoop(EventLoop* ev,  int fd) {};
 
  private:
      vector<SockAddr> tcp_addr_;

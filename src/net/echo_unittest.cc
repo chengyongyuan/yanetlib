@@ -12,115 +12,6 @@ using namespace std;
 using namespace yanetlib::net;
 using namespace yanetlib::comm;
 
-#define MAX_BUF_SIZE (1<<16)
-
-#if 0
-class TcpHandler : public EventCallBack {
- public:
-     TcpHandler() : rpos(0), wpos(0) { }
-     ~TcpHandler() {}
-
-     void HandleRead(EventLoop* ev, int fd) {
-         printf("HandleRead...\n");
-         int bread = YanetReadN(fd, rbuf+wpos, MAX_BUF_SIZE-wpos);
-         if (bread == 0) {
-             printf("Peer Close!\n");
-             ev->DelEvent(fd, YANET_WRITABLE | YANET_READABLE );
-             close(fd);
-             return ;
-         } else if (bread == -1) {
-             printf("Peer Error, close!!\n");
-             ev->DelEvent(fd, YANET_WRITABLE | YANET_READABLE );
-             close(fd);
-             return ;
-         }
-         wpos += bread;
-         if (rpos != wpos) {
-             ev->AddEvent(fd, YANET_WRITABLE, this); 
-         }
-         if (wpos == MAX_BUF_SIZE) {
-             ev->DelEvent(fd, YANET_READABLE);
-         }
-     }
-
-     void HandleWrite(EventLoop* ev, int fd) {
-         int bwrite = YanetWriteN(fd, rbuf+rpos, wpos-rpos);
-         assert(bwrite != -1);
-         rpos += bwrite;
-         if (rpos == wpos) { 
-             rpos = wpos = 0;
-             ev->DelEvent(fd, YANET_WRITABLE);
-         }
-         if (wpos != MAX_BUF_SIZE) {
-             ev->AddEvent(fd, YANET_READABLE, this);
-         }
-     }
-
- private:
-     char rbuf[MAX_BUF_SIZE];
-     int  rpos;
-     int  wpos;
-     struct sockaddr_in caddr;
-};
-
-class ListenHandler : public EventCallBack {
- public:
-     ListenHandler() { }
-     ~ListenHandler() { }
-
-     void HandleRead(EventLoop* ev, int fd) {
-         int cfd = YanetAccept(NULL, fd, NULL, NULL);
-         printf("client fd:%d\n", cfd);
-         assert(cfd != YANET_ERR);
-         assert(YANET_OK == YanetNonBlock(NULL, cfd));
-         ev->AddEvent(cfd, YANET_READABLE, new TcpHandler());
-     }
-
-     void HandleWrite(EventLoop* ev, int fd) {
-     }
-};
-
-class UdpHandler : public EventCallBack {
- public:
-     UdpHandler() : rpos(0), wpos(0) { }
-     ~UdpHandler() {}
-
-     void HandleRead(EventLoop* ev, int fd) {
-         //int bread = YanetReadN(fd, rbuf+wpos, MAX_BUF_SIZE-wpos);
-         socklen_t clen = sizeof(caddr);
-         int bread = recvfrom(fd, rbuf+wpos, MAX_BUF_SIZE-wpos,0, (struct sockaddr*)&caddr,&clen);
-         assert(bread != -1);
-         wpos += bread;
-         if (rpos != wpos) {
-             ev->AddEvent(fd, YANET_WRITABLE, this); 
-         }
-         if (wpos == MAX_BUF_SIZE) {
-             ev->DelEvent(fd, YANET_READABLE);
-         }
-     }
-
-     void HandleWrite(EventLoop* ev, int fd) {
-         //int bwrite = YanetWriteN(fd, rbuf+rpos, wpos-rpos);
-         int bwrite = sendto(fd, rbuf+rpos, wpos - rpos, 0, (struct sockaddr*)&caddr, sizeof(caddr));
-         assert(bwrite != -1);
-         rpos += bwrite;
-         if (rpos == wpos) { 
-             rpos = wpos = 0;
-             ev->DelEvent(fd, YANET_WRITABLE);
-         }
-         if (wpos != MAX_BUF_SIZE) {
-             ev->AddEvent(fd, YANET_READABLE, this);
-         }
-     }
-
- private:
-     char rbuf[MAX_BUF_SIZE];
-     int  rpos;
-     int  wpos;
-     struct sockaddr_in caddr;
-};
-#endif
-
 class MyUdpHandler : public UdpHandler {
  public:
      virtual  int HandleInput(EventLoop* ev, int cfd, char* buf, int blen) {
@@ -144,6 +35,9 @@ class MyUdpHandler : public UdpHandler {
 
 class MyTcpHandler : public TcpHandler {
  public:
+     //default 60 sec
+     explicit MyTcpHandler(long expire_sec = 20) : TcpHandler(expire_sec) { }
+     
      virtual int HandleInput(EventLoop* ev, int cfd, char* buf, int blen) {
          return blen;
      }
@@ -177,6 +71,13 @@ class MyTcpHandler : public TcpHandler {
      }
 };
 
+class MyListenHandler : public ListenHandler {
+ public:
+     virtual void SetNetHandler(EventLoop* ev, int fd) {
+         ev->AddEvent(fd, YANET_READABLE, new MyTcpHandler);
+     }
+};
+
 int main(int argc, char **argv)
 {
     char errbuf[512];
@@ -187,6 +88,6 @@ int main(int argc, char **argv)
     EventLoop ev;
     assert(ev.InitEventLoop() == 0);
     ev.AddEvent(sfd, YANET_READABLE, new MyUdpHandler);
-    ev.AddEvent(listenfd, YANET_READABLE, new ListenHandler(new MyTcpHandler)); 
-    ev.Run();
+    ev.AddEvent(listenfd, YANET_READABLE, new MyListenHandler);
+    ev.Run(100);
 }

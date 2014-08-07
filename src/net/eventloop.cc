@@ -181,6 +181,7 @@ int EventLoop::AddEvent(int fd, int mask, EventCallBack* evt) {
     if (fd > YANET_MAX_POLL_SIZE) return -1;
 
     events_[fd] = evt;
+    events_set_.insert(EventID(fd, evt));
     if (poller_->AddEvent(fd, mask) != 0)
         return -3;
     
@@ -193,7 +194,8 @@ void EventLoop::DelEvent(int fd, int mask) {
 
     if (e == NULL) return ;
     if (poller_->DelEvent(fd, mask)) {
-        delete events_[fd];
+        events_set_.erase(EventID(fd, e));
+        delete e;
         events_[fd] = NULL;
     }
 }
@@ -212,7 +214,7 @@ void EventLoop::DelEvent(int fd, int mask) {
  * the events that's possible to process without to wait are processed.
  *
  * The function returns the number of events processed. */
-int EventLoop::ProcessEvent(int flags) {
+int EventLoop::ProcessEvent(int flags, int wait_ms) {
     int processed = 0;
 
     //Nothing to do, just return ASAP
@@ -247,7 +249,15 @@ int EventLoop::ProcessEvent(int flags) {
                 tvp = &tv;
             } else {
                 //otherwise we can just block
-                tvp = NULL;
+                if (wait_ms == -1) 
+                    tvp = NULL;
+                else {
+                    if (wait_ms < MIN_EVENT_WAIT_TIME)
+                        wait_ms = MIN_EVENT_WAIT_TIME;
+                    tv.tv_sec = wait_ms/1000;
+                    tv.tv_usec = (wait_ms%1000)*1000;
+                    tvp = &tv;
+                }
             }
         }
 
@@ -273,12 +283,26 @@ int EventLoop::ProcessEvent(int flags) {
     return processed;
 }
 
-void EventLoop::Run() {
+void EventLoop::HandleLoop() {
+    for (set<EventID>::iterator it  = events_set_.begin();
+            it != events_set_.end();
+            ) {
+        //event->HandleLoop may invalidate set iterator
+        int fd = it->efd;
+        EventCallBack* e = it->e;
+        assert(e != NULL);
+        ++it;
+        e->HandleLoop(this, fd);
+    }
+}
+
+void EventLoop::Run(int wait_ms) {
     stop_ = 0;
     while (!stop_) {
         if (beforesleep_ != NULL)
             beforesleep_(this);
-        ProcessEvent(YANET_ALL_EVENTS);
+        HandleLoop();
+        ProcessEvent(YANET_ALL_EVENTS, wait_ms);
     }
 }
 } //namespace net

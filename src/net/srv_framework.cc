@@ -1,5 +1,7 @@
+#include <stdio.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include "net_common.h"
 #include "srv_framework.h"
 
 using namespace yanetlib::comm;
@@ -29,7 +31,7 @@ bool SrvFramework::Init() {
 
     //init srv log
     SrvLogConf lconf = _srv_conf.logconf;
-    if (!_srv_log.Init(lconf.level, lconf.name, \
+    if (!_srv_log.Init(lconf.loglevel, lconf.path, \
                 lconf.type, lconf.maxsz)) return false;
 
     //init resource
@@ -40,6 +42,7 @@ bool SrvFramework::Init() {
 
     printf(ANSI_COLOR_GREEN "Srv Start!\n" ANSI_COLOR_RESET);
     LOG_INFO(_srv_log, "Srv Start!");
+    return true;
 }
 
 bool SrvFramework::InitRlimit() {
@@ -59,17 +62,48 @@ bool SrvFramework::InitSrvSocket() {
     }
     for (size_t i = 0; i < _srv_conf.srvlist.size(); ++i) {
         if (!InitOneSrvSock(_srv_conf.srvlist[i])) {
-            LOG_ERROR(_srv_log, "init srv(%s) fail.", Addr2Str(_srv_conf.srvlist[i].addr));
+            //LOG_ERROR(_srv_log, "init srv(%s) fail.", Addr2Str(_srv_conf.srvlist[i].addr));
             return false;
         }
     }
     return true;
 }
 
-void SrvFramework::HandleRead(EventLoop* ev, int fd) {
-}
-
-void SrvFramework::HandleWrite(EventLoop* ev, int fd) {
+bool SrvFramework::InitOneSrvSock(const OneSrvConf& srvconf) {
+    //char errbuf[256];
+    //int fd;
+    /*TODO: problem
+    switch(srvconf.type) {
+        case SrvType_UDP:
+            fd = YanetUdpServer(errbuf, srvconf.addr.ip.c_str(),
+                                    srvconf.addr.port);
+            if (fd < 0) {
+                LOG_ERROR(_srv_log, "init udp socket(%s:%d) fail.",
+                          srvconf.addr.ip.c_str(), srvconf.addr.port);
+                return false;
+            }
+            break;
+        case SrvType_TCP:
+            fd = YanetTcpServer(errbuf, srvconf.addr.ip.c_str(),
+                                    srvconf.addr.port);
+            if (fd < 0) {
+                LOG_ERROR(_srv_log, "init tcp socket(%s:%d) fail.",
+                          srvconf.addr.ip.c_str(), srvconf.addr.port);
+                return false;
+            }
+            break;
+        case SrvType_UNIX:
+            LOG_ERROR(_srv_log, "unix socket currently not implemented!");
+            return false;
+        default:
+            LOG_ERROR(_srv_log, "unkown socket type!");
+            return false;
+    };
+    if (!srvconf.handler || 0 > _ev->AddEvent(fd, YANET_READABLE, srvconf.handler)) {
+        return false;
+    }
+    */
+    return true;
 }
 
 void SrvFramework::Run() {

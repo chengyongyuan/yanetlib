@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include <time.h>
 #include <sys/types.h>
 #include "net_common.h"
 #include "net_handler.h"
@@ -55,14 +56,27 @@ void UdpHandler::HandleWrite(EventLoop* ev, int fd) {
     }
 }
 
-TcpHandler::TcpHandler() : _rbuf(NULL), _wbuf(NULL) {
+TcpHandler::TcpHandler(long expire_sec) : 
+    creat_time_(0), last_access_time_(0),
+    expire_sec_(expire_sec),
+    _rbuf(NULL), _wbuf(NULL) {
     _rbuf = new Buffer;
     _wbuf = new Buffer;
+    creat_time_ = last_access_time_ = time(NULL);
 }
 
 TcpHandler::~TcpHandler() {
     delete _rbuf;
     delete _wbuf;
+}
+
+void TcpHandler::HandleLoop(EventLoop* ev, int fd) {
+    time_t now = time(NULL);
+    if (last_access_time_ + expire_sec_ < now) {
+        ev->DelEvent(fd, YANET_READABLE | YANET_WRITABLE);
+        close(fd);
+        printf("DEBUG. CLOSE IDLE CONN!(%d)\n", fd);
+    }
 }
 
 void TcpHandler::HandleRead(EventLoop* ev, int fd) {
@@ -79,6 +93,7 @@ void TcpHandler::HandleRead(EventLoop* ev, int fd) {
         close(fd);
     }
     _rbuf->Push(bread);
+    last_access_time_ = time(NULL);
 
     int real_datalen = HandleInput(ev, fd, _rbuf->DataPtr(), _rbuf->DataSize());
     if (real_datalen > 0) {

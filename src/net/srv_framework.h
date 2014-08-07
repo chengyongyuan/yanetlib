@@ -6,8 +6,9 @@
 //colincheng @ 2014/08/04
 //
 
-#include <comm/common.h>
-#include <comm/rotate_log.h>
+#include "comm/common.h"
+#include "comm/rotate_log.h"
+#include "eventloop.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -20,6 +21,12 @@ struct SockAddr {
     int port;
 };
 
+enum SrvType {
+    SrvType_UDP  = 1,
+    SrvType_TCP  = 2,
+    SrvType_UNIX = 3,
+};
+
 struct OneSrvConf {
     SrvType type;
     SockAddr addr;
@@ -28,10 +35,10 @@ struct OneSrvConf {
 
 struct SrvLogConf {
     std::string path;
-    RotateType  type;    
+    yanetlib::comm::RotateLog::RotateType  type;    
     //only in effect if type==ROTATE_BY_SIZE
     int maxsz;
-    int loglevel;
+    yanetlib::comm::RotateLog::LogLevel loglevel;
 };
 
 struct SrvConf {
@@ -44,7 +51,7 @@ struct SrvConf {
     //max accept client count
     int max_clt_count;
     //max resource fd count(setrlimit.)
-    int max_rfd_count;
+    int max_fd_count;
     //daemon mode
     bool is_daemon;
 };
@@ -57,16 +64,18 @@ struct SockCtx {
     SockAddr addr;
     //last active time
     time_t last_active_time;
+    //create time
+    time_t creat_time;
 };
 
-class SrvFramework : public ListenHandler {
+class SrvFramework {
  public:
      //typedef
      typedef std::map<int, SockCtx> SockMap;
 
      enum {
-         MAX_SRV_SOCKET = 20;
-         MIN_FD_LIMIT   = 1024;
+         MAX_SRV_SOCKET = 20,
+         MIN_FD_LIMIT   = 1024,
      };
 
  public:
@@ -81,11 +90,6 @@ class SrvFramework : public ListenHandler {
 
      //run srv
      void Run();
- pulibc:
-     //ListenHandler interface
-     void HandleRead(EventLoop* ev, int fd);
-
-     void HandleWrite(EventLoop* ev, int fd);
  private:
      //disable evil
      SrvFramework(const SrvFramework& );
@@ -98,7 +102,7 @@ class SrvFramework : public ListenHandler {
  private:
      EventLoop* _ev;
      SrvConf   _srv_conf;
-     RotateLog _srv_log;
+     yanetlib::comm::RotateLog _srv_log;
      SockMap   _srv_sock_map;
      SockMap   _clt_sock_map;
 };
